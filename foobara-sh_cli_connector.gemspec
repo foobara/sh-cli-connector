@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative "lib/foobara/sh_cli_connector/version"
 
 Gem::Specification.new do |spec|
@@ -24,4 +22,5 @@ Gem::Specification.new do |spec|
   ]
 
   spec.require_paths = ["lib"]
+  spec.metadata["rubygems_mfa_required"] = "true"
 end
