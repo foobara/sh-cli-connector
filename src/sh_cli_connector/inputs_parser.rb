@@ -17,7 +17,7 @@ module Foobara
           end
         end
 
-        attr_accessor :inputs_type
+        attr_accessor :inputs_type, :parser
 
         def initialize(inputs_type)
           self.inputs_type = inputs_type
@@ -115,10 +115,3 @@ module Foobara
     end
   end
 end
-
-# some-org --globalish-opt=1 run --action-option=2 org-name:some-domain:some-command --input1=3 --input2=4
-
-# 1. globalish parser
-# 2. action parser
-# 3. argument parser
-# 4. command_parser

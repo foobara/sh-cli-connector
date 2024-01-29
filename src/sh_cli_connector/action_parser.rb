@@ -22,18 +22,16 @@ module Foobara
             end
           end
 
-          def action
-            @action || :run
-          end
-
           def argument=(argument)
             if @argument
               raise ActionParseError, "Argument already set"
             end
+
+            @argument = argument
           end
 
           def validate!
-            if action == :run
+            if action == "run"
               unless argument
                 raise ActionParseError, "Missing command to run"
               end
@@ -45,28 +43,40 @@ module Foobara
           end
         end
 
+        attr_accessor :parser
+
         def initialize(action = nil)
           self.parser = OptionParser.new
-          self.result = Result.new
-          self.action = action
+          setup_parser
         end
 
-        def parse(argv)
+        def parse(argv, starting_action: nil)
+          result = Result.new
+          result.action = starting_action
+
           begin
-            result.remainder = parser.order(args) do |nonopt|
-              case nonopt
-              when "run", "describe", "manifest", "help"
-                result.action = nonopt.to_sym
+            result.remainder = parser.order(argv) do |nonopt|
+              if result.action.nil?
+                if %w[run describe manifest help].include?(nonopt)
+                  result.action = nonopt
+                else
+                  result.action = "run"
+                  result.argument = nonopt
+                end
+              elsif argument.nil?
+                result.argument = nonopt
+                parser.terminate
               else
                 parser.terminate(nonopt)
               end
             end
-            puts "out: #{out}"
-            binding.pry
-          rescue => e
-            # TODO: catch correct exception here
-            puts "in rescue: #{e}"
-            binding.pry
+          rescue OptionParser::ParseError => e
+            if e.args.size != 1
+              raise "Unexpected ParseError argument count. Expected only 1 but got #{e.args.size}: #{e.args.inspect}"
+            end
+
+            # unclear why this needs to be caught...
+            catch(:terminate) { parser.terminate(e.args.first) }
           end
 
           result.validate!

@@ -12,22 +12,16 @@ module Foobara
 
         attr_accessor :parser, :result
 
-        def initialize
+        def parse(argv)
+          self.result = Result.new
           self.parser = OptionParser.new
           setup_parser
-        end
-
-        def parse(argv)
-          result = Result.new
 
           begin
-            result.remainder = parser.order(args) do |nonopt|
+            result.remainder = parser.order(argv) do |nonopt|
               parser.terminate(nonopt)
             end
-            puts "out: #{out}"
-            binding.pry
-          rescue => e
-            # TODO: catch correct exception here
+          rescue OptionParser::ParseError => e
             puts "in rescue: #{e}"
             binding.pry
           end

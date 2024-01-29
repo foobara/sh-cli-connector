@@ -7,7 +7,15 @@ module Foobara
         def initialize(argv)
           self.argv = argv
 
+          parse!
+
           super()
+        end
+
+        # TODO: we might not have the full command name here... that should be fine.
+        # TODO: rename this.
+        def full_command_name
+          argument
         end
 
         def inputs
@@ -18,6 +26,8 @@ module Foobara
           end
         end
 
+        private
+
         def parse!
           globalish_parser = GlobalishParser.new
 
@@ -25,42 +35,22 @@ module Foobara
 
           self.globalish_options = result.parsed
 
-          action_parser = ActionParser.new(result.parsed[:help] ? :help : nil)
+          action_parser = ActionParser.new
 
-          result = action_parser.parse(result.remainder)
+          result1 = result
+          result = action_parser.parse(result.remainder, starting_action: result.parsed[:help] ? :help : nil)
+          binding.pry
 
           self.action = result.action
           self.argument = result.argument
           self.action_options = result.parsed
           self.inputs_argv = result.remainder
 
-          if action == :run
+          if action == "run"
             unless argument
               raise ActionParseError, "Missing command to run"
             end
           end
-
-          @is_parsed = true
-        end
-
-        # TODO: we might not have the full command name here... that should be fine.
-        # TODO: rename this.
-        def full_command_name
-          argument
-        end
-
-        def action
-          parse! unless parsed?
-          @action
-        end
-
-        def argument
-          parse! unless parsed?
-          @argument
-        end
-
-        def parsed?
-          @is_parsed
         end
       end
     end
