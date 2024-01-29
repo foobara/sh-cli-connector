@@ -47,22 +47,20 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
           "some foo2",
           "--baz--bar",
           "some bar2",
-          "--baz-baz-foo",
+          "--baz--baz--foo",
           "10",
           "11",
           "12",
-          "--baz-baz-bar",
+          "--baz--baz--bar",
           "some bar3"
         ]
       end
 
-      let(:outcome) { command_connector.run(argv) }
+      let(:response) { command_connector.run(argv) }
 
       it "runs the command" do
-        expect(outcome).to be_success
-        result = outcome.result
-
-        expect(result).to eq("---\nsum: 33\n")
+        expect(response.status).to be(0)
+        expect(response.body).to eq("---\n:sum: 33\n")
       end
     end
   end

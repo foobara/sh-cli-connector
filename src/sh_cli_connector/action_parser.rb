@@ -2,8 +2,6 @@ module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
       class ActionParser
-        class ActionParseError < StandardError; end
-
         class Result
           attr_accessor :parsed, :remainder, :action, :argument
 
@@ -14,9 +12,9 @@ module Foobara
 
           def action=(action)
             if @action
-              raise ActionParseError, "Action already set"
+              raise ParseError, "Action already set"
             elsif argument
-              raise ActionParseError, "Not expecting #{action} to appear after #{argument}"
+              raise ParseError, "Not expecting #{action} to appear after #{argument}"
             else
               @action = action
             end
@@ -24,7 +22,7 @@ module Foobara
 
           def argument=(argument)
             if @argument
-              raise ActionParseError, "Argument already set"
+              raise ParseError, "Argument already set"
             end
 
             @argument = argument
@@ -33,11 +31,11 @@ module Foobara
           def validate!
             if action == "run"
               unless argument
-                raise ActionParseError, "Missing command to run"
+                raise ParseError, "Missing command to run"
               end
             elsif action == :describe
               unless argument
-                raise ActionParseError, "Missing command or type to describe"
+                raise ParseError, "Missing command or type to describe"
               end
             end
           end
@@ -71,12 +69,17 @@ module Foobara
               end
             end
           rescue OptionParser::ParseError => e
+            binding.pry
             if e.args.size != 1
               raise "Unexpected ParseError argument count. Expected only 1 but got #{e.args.size}: #{e.args.inspect}"
             end
 
             # unclear why this needs to be caught...
-            catch(:terminate) { parser.terminate(e.args.first) }
+            o = catch(:terminate) do
+              binding.pry
+              parser.terminate(e.args.first)
+            end
+            binding.pry
           end
 
           result.validate!
@@ -86,7 +89,7 @@ module Foobara
         private
 
         def setup_parser
-          parser.raise_unknown = true
+          parser.raise_unknown = false
         end
       end
     end

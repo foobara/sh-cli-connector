@@ -12,12 +12,12 @@ module Foobara
           def validate!
             unless remainder.empty?
               # is this even possible?
-              raise ActionParseError, "Unexpected arguments: #{remainder.join(", ")}"
+              raise ParseError, "Unexpected argument: #{remainder.first}"
             end
           end
         end
 
-        attr_accessor :inputs_type, :parser, :current_array
+        attr_accessor :inputs_type, :parser, :current_array, :result
 
         def initialize(inputs_type)
           self.inputs_type = inputs_type
@@ -27,7 +27,7 @@ module Foobara
         end
 
         def parse(argv)
-          result = Result.new
+          self.result = Result.new
           self.current_array = nil
 
           result.remainder = parser.order(argv) do |nonopt|
@@ -46,7 +46,7 @@ module Foobara
         private
 
         def setup_parser
-          parser.raise_unknown = true
+          parser.raise_unknown = false
 
           short_options_used = Set.new
           required = inputs_type.declaration_data[:required] || []
@@ -80,7 +80,7 @@ module Foobara
             is_boolean = attribute_type.extends_symbol?(:boolean)
             is_array = attribute_type.extends_symbol?(:array)
 
-            prefixed_name = [*prefix, attribute_name].join("_")
+            prefixed_name = [*prefix, attribute_name].join("__")
             long_option_name = Util.kebab_case(prefixed_name)
             short_option = attribute_name[0]
             argument_text = Util.constantify(prefixed_name)
@@ -102,10 +102,18 @@ module Foobara
                 value = true
               end
 
+              h = result.parsed
+
+              prefix.each do |key|
+                # TODO: should we support writing to arrays by index? If so we need to check inputs type to figure
+                # out if we need to create a hash or an array here
+                h = h[key] ||= {}
+              end
+
               self.current_array = if is_array
-                                     result.parsed[attribute_name] = [value]
+                                     h[attribute_name] = [value]
                                    else
-                                     result.parsed[attribute_name] = value
+                                     h[attribute_name] = value
                                      nil
                                    end
             end

@@ -33,7 +33,7 @@ module Foobara
         private
 
         def setup_parser
-          parser.raise_unknown = true
+          parser.raise_unknown = false
 
           parser.on("-h", "--help", "Show this message") do |help|
             result.parsed[:help] = help

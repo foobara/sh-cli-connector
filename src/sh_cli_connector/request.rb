@@ -1,6 +1,8 @@
 module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
+      class ParseError < StandardError; end
+
       class Request < CommandConnectors::Request
         attr_accessor :argv, :globalish_options, :inputs_argv, :action, :argument, :action_options
 
@@ -47,7 +49,7 @@ module Foobara
 
           if action == "run"
             unless argument
-              raise ActionParseError, "Missing command to run"
+              raise ParseError, "Missing command to run"
             end
           end
         end
