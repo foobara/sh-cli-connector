@@ -2,7 +2,7 @@ module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
       class Request < CommandConnectors::Request
-        attr_accessor :argv, :globalish_options, :inputs_argv
+        attr_accessor :argv, :globalish_options, :inputs_argv, :action, :argument, :action_options
 
         def initialize(argv)
           self.argv = argv
@@ -18,7 +18,7 @@ module Foobara
           end
         end
 
-        def parse
+        def parse!
           globalish_parser = GlobalishParser.new
 
           result = globalish_parser.parse(argv)
@@ -39,12 +39,28 @@ module Foobara
               raise ActionParseError, "Missing command to run"
             end
           end
+
+          @is_parsed = true
         end
 
         # TODO: we might not have the full command name here... that should be fine.
         # TODO: rename this.
         def full_command_name
           argument
+        end
+
+        def action
+          parse! unless parsed?
+          @action
+        end
+
+        def argument
+          parse! unless parsed?
+          @argument
+        end
+
+        def parsed?
+          @is_parsed
         end
       end
     end
