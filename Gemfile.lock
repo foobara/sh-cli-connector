@@ -6,6 +6,12 @@ GIT
     foobara (0.0.1)
 
 GIT
+  remote: foobara-util
+  revision: b20d1072622b502239b18fbc2e0e39cf50e169d4
+  specs:
+    foobara-util (0.1.0)
+
+GIT
   remote: https://github.com/foobara/rubocop-rules.git
   revision: ab767521b18ac1d78a3d746d858ae1fc29b542f6
   specs:
@@ -18,12 +24,6 @@ GIT
   revision: ee5809a26ae9ee4bae8e29f77ef689192b399bec
   specs:
     foobara-spec-helpers (0.1.0)
-
-GIT
-  remote: https://github.com/foobara/util.git
-  revision: b20d1072622b502239b18fbc2e0e39cf50e169d4
-  specs:
-    foobara-util (0.1.0)
 
 PATH
   remote: .

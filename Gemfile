@@ -5,7 +5,9 @@ gemspec
 
 # TODO: move this to .gemspec
 gem "foobara", git: "foobara", branch: "main"
-gem "foobara-util", github: "foobara/util"
+# gem "foobara-util", github: "foobara/util"
+# bundle config set local.foobara-util ../util
+gem "foobara-util", git: "foobara-util"
 
 # Development dependencies go here
 # TODO: move this to .gemspec

@@ -39,7 +39,6 @@ module Foobara
 
           result1 = result
           result = action_parser.parse(result.remainder, starting_action: result.parsed[:help] ? :help : nil)
-          binding.pry
 
           self.action = result.action
           self.argument = result.argument

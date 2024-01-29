@@ -17,7 +17,7 @@ module Foobara
           end
         end
 
-        attr_accessor :inputs_type, :parser
+        attr_accessor :inputs_type, :parser, :current_array
 
         def initialize(inputs_type)
           self.inputs_type = inputs_type
@@ -27,10 +27,10 @@ module Foobara
         end
 
         def parse(argv)
-          self.result = Result.new
+          result = Result.new
           self.current_array = nil
 
-          result.remainder = parser.order(args) do |nonopt|
+          result.remainder = parser.order(argv) do |nonopt|
             if current_array
               current_array << nonopt
             else
