@@ -1,1 +1,1 @@
-require_relative "sh_cli_connector/version"
+Foobara::Util.require_directory "#{__dir__}/../../src/sh_cli_connector"

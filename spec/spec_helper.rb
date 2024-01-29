@@ -7,6 +7,7 @@ require "rack/test"
 require "simplecov"
 
 require "foobara/all"
+require "foobara/command_connectors"
 
 SimpleCov.start do
   # enable_coverage :branch

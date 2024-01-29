@@ -1,6 +1,6 @@
 module Foobara
   module CommandConnectors
-    class Http < CommandConnector
+    class ShCliConnector < CommandConnector
       def request_to_command(request)
         action = request.action
         inputs = nil
