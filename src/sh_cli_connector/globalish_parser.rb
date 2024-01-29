@@ -41,17 +41,23 @@ module Foobara
           parser.raise_unknown = true
 
           parser.on("-h", "--help", "Show this message") do |help|
-            result[:help] = help
+            result.parsed[:help] = help
+          end
+
+          parser.on("-f FORMAT", "--format FORMAT", "Set the input/output format (such as yaml or json)") do |format|
+            result.parsed[:input_format] = format
+            result.parsed[:output_format] = format
+          end
+
+          parser.on("--input-format FORMAT", "Set the input format (such as yaml or json)") do |format|
+            result.parsed[:input_format] = format
+          end
+
+          parser.on("--output-format FORMAT", "Set the output format (such as yaml or json)") do |format|
+            result.parsed[:output_format] = format
           end
         end
       end
     end
   end
 end
-
-# some-org --globalish-opt=1 run --action-option=2 org-name:some-domain:some-command --input1=3 --input2=4
-
-# 1. globalish parser
-# 2. action parser
-# 3. argument parser
-# 4. command_parser
