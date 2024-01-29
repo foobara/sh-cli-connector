@@ -10,21 +10,13 @@ module Foobara
         # Or call the serializer here??
         body = command.respond_to?(:serialize_result) ? command.serialize_result : outcome.result
 
-        # TODO: we should access these serializers as registered on the command connector to support adding more.
         output_format = request.globalish_options[:output_format]
 
-        # TODO: encapsulate this logic elsewhere...
         serializer_class = if output_format.nil?
                              # TODO: make a CLI serializer for this case...
                              Serializers::YamlSerializer
                            else
-                             Util.descendants(Serializer).find do |klass|
-                               name = Util.non_full_name(klass)
-                               name = name.gsub(/Serializer$/, "")
-                               name = Util.underscore(name)
-
-                               output_format == name
-                             end
+                             Serializer.serializer_from_symbol(output_format)
                            end
 
         unless serializer_class
