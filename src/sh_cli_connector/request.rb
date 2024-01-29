@@ -2,7 +2,7 @@ module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
       class Request < CommandConnectors::Request
-        attr_accessor :argv
+        attr_accessor :argv, :globalish_options, :inputs_argv
 
         def initialize(argv)
           self.argv = argv
@@ -11,44 +11,40 @@ module Foobara
         end
 
         def inputs
-          @inputs ||= command_parser.parse(command_args)
+          @inputs ||= begin
+            inputs_parser = InputsParser.new(command_class.inputs_type)
+            result = inputs_parser.parse(inputs_argv)
+            result.parsed
+          end
         end
 
         def parse
-          remainder = globalish_options_parser.parse(argv)
+          globalish_parser = GlobalishParser.new
+
+          result = globalish_parser.parse(argv)
+
+          self.globalish_options = result.parsed
+
+          action_parser = ActionParser.new(result.parsed[:help] ? :help : nil)
+
+          result = action_parser.parse(result.remainder)
+
+          self.action = result.action
+          self.argument = result.argument
+          self.action_options = result.parsed
+          self.inputs_argv = result.remainder
+
+          if action == :run
+            unless argument
+              raise ActionParseError, "Missing command to run"
+            end
+          end
         end
 
+        # TODO: we might not have the full command name here... that should be fine.
+        # TODO: rename this.
         def full_command_name
-          unless defined?(@full_command_name)
-            set_action_and_command_name
-          end
-
-          @full_command_name
-        end
-
-        def parsed_body
-          body.empty? ? {} : JSON.parse(body)
-        end
-
-        def parsed_query_string
-          if query_string.empty?
-            {}
-          else
-            # TODO: override this in rack connector to use better rack utils
-            CGI.parse(query_string).transform_values!(&:first)
-          end
-        end
-
-        def action
-          unless defined?(@action)
-            set_action_and_command_name
-          end
-
-          @action
-        end
-
-        def set_action_and_command_name
-          @action, @full_command_name = path[1..].split("/")
+          argument
         end
       end
     end

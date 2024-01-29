@@ -1,7 +1,11 @@
 module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
-      def request_to_command(request)
+      def request_to_command(argv)
+        parser = ArgvParser.new(command_registry)
+        parse_result = parser.parse(argv)
+
+        binding.pry
         action = request.action
         inputs = nil
 

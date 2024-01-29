@@ -36,7 +36,8 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     context "when running the command with implicit #run with a formatter and inputs" do
       let(:argv) do
         [
-          "-f yaml",
+          "-f",
+          "yaml",
           "SomeCommand",
           "--foo",
           "some foo1",
