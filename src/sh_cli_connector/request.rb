@@ -43,27 +43,14 @@ module Foobara
 
           action_parser = ActionParser.new
 
-          result = action_parser.parse(result.remainder, starting_action: result.parsed[:help] ? :help : nil)
+          result = action_parser.parse(result.remainder, starting_action: result.parsed[:help] ? "help" : nil)
 
           self.action = result.action
           self.argument = result.argument
           self.action_options = result.parsed
           self.inputs_argv = result.remainder
-
-          if action == "run"
-            unless argument
-              raise ParseError, "Missing command to run"
-            end
-          end
         end
       end
     end
   end
 end
-
-# banner
-# additional_message
-# environment
-# program_name
-# summarize
-# warn

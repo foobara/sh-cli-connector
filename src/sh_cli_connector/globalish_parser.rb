@@ -17,14 +17,11 @@ module Foobara
           self.parser = OptionParser.new
           setup_parser
 
-          begin
-            result.remainder = parser.order(argv) do |nonopt|
-              parser.terminate(nonopt)
-            end
-          rescue OptionParser::ParseError => e
-            puts "in rescue: #{e}"
-            raise
+          result.remainder = parser.order(argv) do |nonopt|
+            parser.terminate(nonopt)
           end
+
+          validate_formats!
 
           result
         end
@@ -49,6 +46,16 @@ module Foobara
 
           parser.on("--output-format FORMAT", "Set the output format (such as yaml or json)") do |format|
             result.parsed[:output_format] = format
+          end
+        end
+
+        def validate_formats!
+          [result.parsed[:input_format], result.parsed[:output_format]].compact.uniq.each do |format|
+            if format
+              unless Serializer.serializer_from_symbol(format)
+                raise ParseError, "Unknown format: #{format}"
+              end
+            end
           end
         end
       end

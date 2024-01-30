@@ -13,9 +13,13 @@ module Foobara
 
           def action=(action)
             if @action
+              # :nocov:
               raise ParseError, "Action already set"
+              # :nocov:
             elsif argument
+              # :nocov:
               raise ParseError, "Not expecting #{action} to appear after #{argument}"
+              # :nocov:
             else
               @action = action
             end
@@ -23,18 +27,25 @@ module Foobara
 
           def argument=(argument)
             if @argument
+              # :nocov:
               raise ParseError, "Argument already set"
+              # :nocov:
             end
 
             @argument = argument
           end
 
           def validate!
+            if action.nil?
+              raise ParseError,
+                    "Found invalid option #{remainder.first} but was expecting an action like 'run' or 'help'"
+            end
+
             if action == "run"
               unless argument
                 raise ParseError, "Missing command to run"
               end
-            elsif action == :describe
+            elsif action == "describe"
               unless argument
                 raise ParseError, "Missing command or type to describe"
               end
@@ -53,30 +64,19 @@ module Foobara
           result = Result.new
           result.action = starting_action
 
-          begin
-            result.remainder = parser.order(argv) do |nonopt|
-              if result.action.nil?
-                if %w[run describe manifest help].include?(nonopt)
-                  result.action = nonopt
-                else
-                  result.action = "run"
-                  result.argument = nonopt
-                end
-              elsif argument.nil?
-                result.argument = nonopt
-                parser.terminate
+          result.remainder = parser.order(argv) do |nonopt|
+            if result.action.nil?
+              if %w[run describe manifest help].include?(nonopt)
+                result.action = nonopt
               else
-                parser.terminate(nonopt)
+                result.action = "run"
+                result.argument = nonopt
               end
-            end
-          rescue OptionParser::ParseError => e
-            if e.args.size != 1
-              raise "Unexpected ParseError argument count. Expected only 1 but got #{e.args.size}: #{e.args.inspect}"
-            end
-
-            # unclear why this needs to be caught...
-            catch(:terminate) do
-              parser.terminate(e.args.first)
+            elsif result.argument.nil?
+              result.argument = nonopt
+              parser.terminate
+            else
+              parser.terminate(nonopt)
             end
           end
 

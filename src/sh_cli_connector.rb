@@ -4,10 +4,13 @@ module Foobara
       # TODO: eliminate passing the command here...
       def request_to_response(request)
         if request.error
-          if request.error.is_a?(ParseError)
+          case request.error
+          when ParseError, CommandConnector::NoCommandFoundError
             return Response.new(status: 6, body: request.error.message, request:)
           else
-            raise "Not sure how to handle error: #{error}"
+            # :nocov:
+            raise "Not sure how to handle error: #{request.error}"
+            # :nocov:
           end
         end
 
@@ -27,11 +30,6 @@ module Foobara
                              Serializer.serializer_from_symbol(output_format)
                            end
 
-        unless serializer_class
-          # TODO: should really raise this BEFORE running the command...
-          raise "Unknown output format: #{request.globalish_options[:output_format]}"
-        end
-
         serializer = serializer_class.new(request)
         body = serializer.serialize(body)
 
@@ -46,18 +44,33 @@ module Foobara
                      case error
                      when CommandConnector::NotFoundError, Foobara::Command::Concerns::Entities::NotFoundError
                        # TODO: we should not be coupled to Entities here...
+                       # :nocov:
                        2
+                       # :nocov:
                      when CommandConnector::UnauthenticatedError
+                       # :nocov:
                        3
+                       # :nocov:
                      when CommandConnector::NotAllowedError
+                       # :nocov:
                        4
+                       # :nocov:
                      when CommandConnector::UnknownError
+                       # :nocov:
                        5
+                       # :nocov:
                      end
                    end || 1
                  end
 
         Response.new(status:, body:, request:)
+      end
+
+      def request_to_command(request)
+        super
+      rescue CommandConnector::NoCommandFoundError, ParseError => e
+        request.error = e
+        nil
       end
     end
   end
