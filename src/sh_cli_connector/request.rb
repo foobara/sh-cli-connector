@@ -9,7 +9,11 @@ module Foobara
         def initialize(argv)
           self.argv = argv
 
-          parse!
+          begin
+            parse!
+          rescue ParseError => e
+            self.error = e
+          end
 
           super()
         end

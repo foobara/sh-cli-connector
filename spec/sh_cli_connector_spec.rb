@@ -29,6 +29,8 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       end
     end
 
+    let(:response) { command_connector.run(argv) }
+
     before do
       command_connector.connect(command_class)
     end
@@ -56,11 +58,18 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         ]
       end
 
-      let(:response) { command_connector.run(argv) }
-
       it "runs the command" do
         expect(response.status).to be(0)
         expect(response.body).to eq("---\n:sum: 33\n")
+      end
+    end
+
+    context "when not giving a command to run" do
+      let(:argv) { ["run"] }
+
+      it "is an error" do
+        expect(response.status).to be(6)
+        expect(response.body).to match("Missing command to run")
       end
     end
   end

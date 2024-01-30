@@ -3,6 +3,14 @@ module Foobara
     class ShCliConnector < CommandConnector
       # TODO: eliminate passing the command here...
       def request_to_response(request)
+        if request.error
+          if request.error.is_a?(ParseError)
+            return Response.new(status: 6, body: request.error.message, request:)
+          else
+            raise "Not sure how to handle error: #{error}"
+          end
+        end
+
         command = request.command
         outcome = command.outcome
 
@@ -49,7 +57,7 @@ module Foobara
                    end || 1
                  end
 
-        Response.new(status:, body:)
+        Response.new(status:, body:, request:)
       end
     end
   end
