@@ -3,7 +3,8 @@ module Foobara
     class ShCliConnector < CommandConnector
       class ActionParser
         class Result
-          attr_accessor :parsed, :remainder, :action, :argument
+          attr_accessor :parsed, :remainder
+          attr_reader :action, :argument
 
           def initialize(action = nil)
             self.parsed = {}
@@ -43,7 +44,7 @@ module Foobara
 
         attr_accessor :parser
 
-        def initialize(action = nil)
+        def initialize
           self.parser = OptionParser.new
           setup_parser
         end
@@ -69,17 +70,14 @@ module Foobara
               end
             end
           rescue OptionParser::ParseError => e
-            binding.pry
             if e.args.size != 1
               raise "Unexpected ParseError argument count. Expected only 1 but got #{e.args.size}: #{e.args.inspect}"
             end
 
             # unclear why this needs to be caught...
-            o = catch(:terminate) do
-              binding.pry
+            catch(:terminate) do
               parser.terminate(e.args.first)
             end
-            binding.pry
           end
 
           result.validate!

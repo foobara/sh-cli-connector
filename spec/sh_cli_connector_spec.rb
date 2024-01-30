@@ -3,9 +3,9 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     expect(Foobara::ShCliConnector::VERSION).to_not be_nil
   end
 
-  context "When there is a connected command" do
+  context "when there is a connected command" do
     let(:command_connector) do
-      Foobara::CommandConnectors::ShCliConnector.new
+      described_class.new
     end
 
     let(:command_class) do

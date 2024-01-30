@@ -23,7 +23,6 @@ module Foobara
             end
           rescue OptionParser::ParseError => e
             puts "in rescue: #{e}"
-            binding.pry
             raise
           end
 
