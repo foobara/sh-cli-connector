@@ -10,12 +10,12 @@ module Foobara
           end
         end
 
-        attr_accessor :parser, :result
+        attr_accessor :result
+        attr_writer :parser
 
         def parse(argv)
+          self.parser = nil
           self.result = Result.new
-          self.parser = OptionParser.new
-          setup_parser
 
           result.remainder = parser.order(argv) do |nonopt|
             parser.terminate(nonopt)
@@ -24,6 +24,15 @@ module Foobara
           validate_formats!
 
           result
+        end
+
+        def parser
+          return @parser if @parser
+
+          @parser = OptionParser.new
+          setup_parser
+
+          @parser
         end
 
         private
