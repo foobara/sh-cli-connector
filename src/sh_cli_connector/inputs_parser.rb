@@ -47,6 +47,7 @@ module Foobara
 
         def setup_parser
           parser.raise_unknown = false
+          parser.set_summary_indent "  "
 
           short_options_used = Set.new
           required = inputs_type.declaration_data[:required] || []

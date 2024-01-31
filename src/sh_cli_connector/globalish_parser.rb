@@ -39,6 +39,7 @@ module Foobara
 
         def setup_parser
           parser.raise_unknown = false
+          parser.set_summary_indent "  "
 
           parser.on("-h", "--help", "Show this message") do |help|
             result.parsed[:help] = help
