@@ -55,9 +55,7 @@ module Foobara
             usage += case argument
                      when "run"
                        "COMMAND_NAME [COMMAND_INPUTS]"
-                     when "describe"
-                       "COMMAND_OR_TYPE_NAME"
-                     when "manifest"
+                     when "describe", "manifest"
                        "COMMAND_OR_TYPE_NAME"
                      when "ping", "query_git_commit_info"
                        ""

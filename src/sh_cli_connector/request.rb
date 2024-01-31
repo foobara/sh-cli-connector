@@ -43,7 +43,9 @@ module Foobara
                                end
 
             unless serializer_class
+              # :nocov:
               raise ParseError, "Unknown input format: #{input_format}"
+              # :nocov:
             end
 
             serializer_class.new(nil)
@@ -62,7 +64,9 @@ module Foobara
                                end
 
             unless serializer_class
+              # :nocov:
               raise ParseError, "Unknown output format: #{output_format}"
+              # :nocov:
             end
 
             serializer_class.new(nil)
