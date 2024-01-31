@@ -5,7 +5,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
   context "when there is a connected command" do
     let(:command_connector) do
-      described_class.new
+      described_class.new(program_name: "test-cli")
     end
 
     let(:stdin) { StringIO.new }
@@ -15,7 +15,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     let(:inputs_proc) do
       proc do
         foo :string, default: "asdf"
-        bar :integer, :required
+        bar :integer, :required, "just some attribute named bar"
         baz do
           foo :symbol
           bar :symbol
@@ -31,6 +31,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       ip = inputs_proc
 
       stub_class "SomeCommand", Foobara::Command do
+        description "Just some command class"
         inputs(&ip)
 
         def execute
@@ -167,10 +168,23 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     context "when using help action through a switch" do
       let(:argv) { ["--help"] }
 
-      it "sets the help action", :focus do
+      it "sets the help action" do
         expect(response.request.action).to eq("help")
         # TODO: register help with the CLI serializer
-        expect(response.body).to match("helping!!")
+        expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS]")
+        expect(response.body).to include("Available actions:")
+        expect(response.body).to include("--stdin")
+      end
+    end
+
+    context "when asking for help with a command" do
+      let(:argv) { %w[help SomeCommand] }
+
+      it "gives help text for the command" do
+        expect(response.status).to be(0)
+        expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] SomeCommand")
+        expect(response.body).to include("Just some command class")
+        expect(response.body).to match(/-b,\s*--bar BAR\s*just some attribute named bar/)
       end
     end
 

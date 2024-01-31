@@ -47,6 +47,7 @@ module Foobara
 
         def setup_parser
           parser.raise_unknown = false
+          parser.set_summary_indent "  "
 
           short_options_used = Set.new
           required = inputs_type.declaration_data[:required] || []
@@ -91,6 +92,12 @@ module Foobara
             unless short_options_used.include?(short_option)
               short_options_used << short_option
               args << "-#{short_option} #{argument_text}"
+            end
+
+            description = attribute_type.description
+
+            if description && !BuiltinTypes.builtin?(attribute_type)
+              args << description
             end
 
             # TODO: support these

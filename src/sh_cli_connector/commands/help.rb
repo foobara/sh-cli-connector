@@ -40,7 +40,9 @@ module Foobara
           end
 
           def print_bad_argument_warning
-            output.puts "Unexpected argument: #{argument}"
+            output.puts
+            output.puts "WARNING: Unexpected argument: #{argument}"
+            output.puts
           end
 
           def print_usage_without_argument
@@ -48,7 +50,7 @@ module Foobara
           end
 
           def print_usage_for_argument
-            usage = "Usage: #{program_name} [global options] #{argument} "
+            usage = "Usage: #{program_name} [GLOBAL_OPTIONS] #{argument} "
 
             usage += case argument
                      when "run"
@@ -89,11 +91,21 @@ module Foobara
           end
 
           def valid_argument?
-            # TODO: implement this
-            if argument
-              binding.pry
-              known_actions.include?(argument)
-            end
+            argument && (argument_is_action? || argument_is_command?)
+          end
+
+          def argument_is_command?
+            !!command_class
+          end
+
+          def command_class
+            return @command_class if defined?(@command_class)
+
+            @command_class = argument && command_registry.transformed_command_from_name(argument)
+          end
+
+          def argument_is_action?
+            known_actions.include?(argument)
           end
 
           # TODO: maybe move this up the hierarchy?
@@ -109,20 +121,44 @@ module Foobara
           end
 
           def print_available_actions
+            output.puts
             output.puts "Available actions:"
+            output.puts
             output.puts "  #{known_actions.join(", ")}"
+            output.puts
+            output.puts "Default action: run"
           end
 
           def print_available_commands
+            output.puts
             output.puts "Available commands:"
+            output.puts
             command_registry.each_transformed_command_class do |command_class|
               output.puts "  #{command_class.full_command_name}"
             end
           end
 
           def print_global_options
+            output.puts
             output.puts "Global options:"
+            output.puts
             output.puts request.globalish_parser.parser.summarize
+          end
+
+          def print_command_description
+            description = command_class.description
+
+            if description
+              output.puts
+              output.puts command_class.description
+            end
+          end
+
+          def print_command_input_options
+            output.puts
+            output.puts "Command inputs:"
+            output.puts
+            output.puts request.inputs_parser_for(command_class).parser.summarize
           end
 
           def output_string

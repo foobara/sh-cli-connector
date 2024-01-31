@@ -79,10 +79,17 @@ module Foobara
           @inputs ||= if globalish_options[:stdin]
                         input_serializer.deserialize(stdin.read)
                       else
-                        inputs_parser = InputsParser.new(command_class.inputs_type)
                         result = inputs_parser.parse(inputs_argv)
                         result.parsed
                       end
+        end
+
+        def inputs_parser
+          @inputs_parser ||= inputs_parser_for
+        end
+
+        def inputs_parser_for(command_class = self.command_class)
+          InputsParser.new(command_class.inputs_type)
         end
 
         def globalish_parser
