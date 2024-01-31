@@ -42,6 +42,12 @@ module Foobara
                                  Serializer.serializer_from_symbol(input_format)
                                end
 
+            unless serializer_class
+              # :nocov:
+              raise ParseError, "Unknown input format: #{input_format}"
+              # :nocov:
+            end
+
             serializer_class.new(nil)
           end
         end
@@ -57,6 +63,12 @@ module Foobara
                                  Serializer.serializer_from_symbol(output_format)
                                end
 
+            unless serializer_class
+              # :nocov:
+              raise ParseError, "Unknown output format: #{output_format}"
+              # :nocov:
+            end
+
             serializer_class.new(nil)
           end
         end
@@ -71,29 +83,47 @@ module Foobara
           @inputs ||= if globalish_options[:stdin]
                         input_serializer.deserialize(stdin.read)
                       else
-                        inputs_parser = InputsParser.new(command_class.inputs_type)
                         result = inputs_parser.parse(inputs_argv)
                         result.parsed
                       end
         end
 
+        def inputs_parser
+          @inputs_parser ||= inputs_parser_for
+        end
+
+        def inputs_parser_for(command_class = self.command_class)
+          InputsParser.new(command_class.inputs_type)
+        end
+
+        def globalish_parser
+          @globalish_parser ||= GlobalishParser.new
+        end
+
         private
 
         def parse!
-          globalish_parser = GlobalishParser.new
+          if argv.empty?
+            self.action = "help"
+            self.globalish_options = {}
+          else
+            result = globalish_parser.parse(argv)
 
-          result = globalish_parser.parse(argv)
+            self.globalish_options = result.parsed
 
-          self.globalish_options = result.parsed
+            action_parser = ActionParser.new
 
-          action_parser = ActionParser.new
+            result = action_parser.parse(result.remainder, starting_action: result.parsed[:help] ? "help" : nil)
 
-          result = action_parser.parse(result.remainder, starting_action: result.parsed[:help] ? "help" : nil)
+            self.action = result.action
+            self.argument = result.argument
+            self.action_options = result.parsed
+            self.inputs_argv = result.remainder
+          end
 
-          self.action = result.action
-          self.argument = result.argument
-          self.action_options = result.parsed
-          self.inputs_argv = result.remainder
+          if action == "help"
+            globalish_options[:output_format] = "noop"
+          end
         end
       end
     end
