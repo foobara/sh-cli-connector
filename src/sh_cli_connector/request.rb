@@ -85,6 +85,10 @@ module Foobara
                       end
         end
 
+        def globalish_parser
+          @globalish_parser ||= GlobalishParser.new
+        end
+
         private
 
         def parse!
@@ -92,8 +96,6 @@ module Foobara
             self.action = "help"
             self.globalish_options = {}
           else
-            globalish_parser = GlobalishParser.new
-
             result = globalish_parser.parse(argv)
 
             self.globalish_options = result.parsed

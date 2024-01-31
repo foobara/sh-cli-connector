@@ -10,13 +10,14 @@ module Foobara
           def execute
             print_usage
 
-            if argument_present_and_valid?
+            if valid_argument?
               if argument_is_command?
                 print_command_description
                 print_command_input_options
               end
             else
               print_available_actions
+              print_available_commands
             end
 
             print_global_options
@@ -79,9 +80,49 @@ module Foobara
             request.command_connector
           end
 
+          def command_registry
+            command_connector.command_registry
+          end
+
+          def argument
+            request.argument
+          end
+
           def valid_argument?
             # TODO: implement this
-            true
+            if argument
+              binding.pry
+              known_actions.include?(argument)
+            end
+          end
+
+          # TODO: maybe move this up the hierarchy?
+          def known_actions
+            %w[
+              run
+              describe
+              manifest
+              ping
+              query_git_commit_info
+              help
+            ]
+          end
+
+          def print_available_actions
+            output.puts "Available actions:"
+            output.puts "  #{known_actions.join(", ")}"
+          end
+
+          def print_available_commands
+            output.puts "Available commands:"
+            command_registry.each_transformed_command_class do |command_class|
+              output.puts "  #{command_class.full_command_name}"
+            end
+          end
+
+          def print_global_options
+            output.puts "Global options:"
+            output.puts request.globalish_parser.parser.summarize
           end
 
           def output_string

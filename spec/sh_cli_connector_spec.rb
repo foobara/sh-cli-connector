@@ -167,7 +167,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     context "when using help action through a switch" do
       let(:argv) { ["--help"] }
 
-      it "sets the help action" do
+      it "sets the help action", :focus do
         expect(response.request.action).to eq("help")
         # TODO: register help with the CLI serializer
         expect(response.body).to match("helping!!")
