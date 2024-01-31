@@ -1,7 +1,7 @@
 require_relative "src/sh_cli_connector/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "foobara-sh_cli_connector"
+  spec.name = "foobara-sh-cli-connector"
   spec.version = Foobara::ShCliConnector::VERSION
   spec.authors = ["Miles Georgi"]
   spec.email = ["azimux@gmail.com"]

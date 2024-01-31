@@ -28,7 +28,7 @@ GIT
 PATH
   remote: .
   specs:
-    foobara-sh_cli_connector (0.1.0)
+    foobara-sh-cli-connector (0.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -146,7 +146,7 @@ PLATFORMS
 DEPENDENCIES
   foobara!
   foobara-rubocop-rules!
-  foobara-sh_cli_connector!
+  foobara-sh-cli-connector!
   foobara-spec-helpers!
   foobara-util!
   guard-rspec
