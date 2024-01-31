@@ -93,6 +93,12 @@ module Foobara
               args << "-#{short_option} #{argument_text}"
             end
 
+            description = attribute_type.description
+
+            if description && !BuiltinTypes.builtin?(attribute_type)
+              args << description
+            end
+
             # TODO: support these
             # args << attributes_type.description
             # args << attributes_type.declaration_data[:one_of] if attributes_type.declaration_data.key?(:one_of)
