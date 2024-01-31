@@ -4,10 +4,23 @@ module Foobara
       class ParseError < StandardError; end
 
       class Request < CommandConnectors::Request
-        attr_accessor :argv, :globalish_options, :inputs_argv, :action, :argument, :action_options
+        attr_accessor :argv,
+                      :globalish_options,
+                      :inputs_argv,
+                      :action,
+                      :argument,
+                      :action_options,
+                      :stdin,
+                      :stdout,
+                      :stderr,
+                      :exit
 
-        def initialize(argv)
+        def initialize(argv, exit: true, stdout: $stdout, stderr: $stderr, stdin: $stdin)
           self.argv = argv
+          self.exit = exit
+          self.stdin = stdin
+          self.stdout = stdout
+          self.stderr = stderr
 
           begin
             parse!
@@ -18,6 +31,36 @@ module Foobara
           super()
         end
 
+        def input_serializer
+          @input_serializer ||= begin
+            input_format = globalish_options[:input_format]
+
+            serializer_class = if input_format.nil?
+                                 # TODO: refactor this to some default setting
+                                 Serializers::YamlSerializer
+                               else
+                                 Serializer.serializer_from_symbol(input_format)
+                               end
+
+            serializer_class.new(nil)
+          end
+        end
+
+        def output_serializer
+          @output_serializer ||= begin
+            output_format = globalish_options[:output_format]
+
+            serializer_class = if output_format.nil?
+                                 # TODO: refactor this to some default setting
+                                 Serializers::YamlSerializer
+                               else
+                                 Serializer.serializer_from_symbol(output_format)
+                               end
+
+            serializer_class.new(nil)
+          end
+        end
+
         # TODO: we might not have the full command name here... that should be fine.
         # TODO: rename this.
         def full_command_name
@@ -25,11 +68,13 @@ module Foobara
         end
 
         def inputs
-          @inputs ||= begin
-            inputs_parser = InputsParser.new(command_class.inputs_type)
-            result = inputs_parser.parse(inputs_argv)
-            result.parsed
-          end
+          @inputs ||= if globalish_options[:stdin]
+                        input_serializer.deserialize(stdin.read)
+                      else
+                        inputs_parser = InputsParser.new(command_class.inputs_type)
+                        result = inputs_parser.parse(inputs_argv)
+                        result.parsed
+                      end
         end
 
         private

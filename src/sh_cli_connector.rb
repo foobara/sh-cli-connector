@@ -1,7 +1,28 @@
 module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
-      # TODO: eliminate passing the command here...
+      # TODO: this needs a better name... it's doing more than building.
+      def build_response(request)
+        response = super
+        status = response.status
+        out = response.status.zero? ? request.stdout : request.stderr
+
+        out.puts response.body
+
+        if request.exit
+          exit status
+        end
+
+        response
+      end
+
+      def request_to_command(request)
+        super
+      rescue CommandConnector::NoCommandFoundError, ParseError => e
+        request.error = e
+        nil
+      end
+
       def request_to_response(request)
         if request.error
           case request.error
@@ -20,18 +41,7 @@ module Foobara
         # TODO: feels awkward to call this here... Maybe use result/errors transformers instead??
         # Or call the serializer here??
         body = command.respond_to?(:serialize_result) ? command.serialize_result : outcome.result
-
-        output_format = request.globalish_options[:output_format]
-
-        serializer_class = if output_format.nil?
-                             # TODO: make a CLI serializer for this case...
-                             Serializers::YamlSerializer
-                           else
-                             Serializer.serializer_from_symbol(output_format)
-                           end
-
-        serializer = serializer_class.new(request)
-        body = serializer.serialize(body)
+        body = request.output_serializer.serialize(body)
 
         status = if outcome.success?
                    0
@@ -64,13 +74,6 @@ module Foobara
                  end
 
         Response.new(status:, body:, request:)
-      end
-
-      def request_to_command(request)
-        super
-      rescue CommandConnector::NoCommandFoundError, ParseError => e
-        request.error = e
-        nil
       end
     end
   end

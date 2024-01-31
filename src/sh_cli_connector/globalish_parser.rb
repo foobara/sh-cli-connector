@@ -47,6 +47,10 @@ module Foobara
           parser.on("--output-format FORMAT", "Set the output format (such as yaml or json)") do |format|
             result.parsed[:output_format] = format
           end
+
+          parser.on("--stdin", "Read and parse inputs from stdin") do
+            result.parsed[:stdin] = true
+          end
         end
 
         def validate_formats!

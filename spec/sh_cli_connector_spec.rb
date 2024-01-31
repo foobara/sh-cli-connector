@@ -8,6 +8,10 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       described_class.new
     end
 
+    let(:stdin) { StringIO.new }
+    let(:stdout) { StringIO.new }
+    let(:stderr) { StringIO.new }
+
     let(:inputs_proc) do
       proc do
         foo :string, default: "asdf"
@@ -35,10 +39,11 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       end
     end
 
-    let(:response) { command_connector.run(argv) }
+    let(:response) { command_connector.run(argv, stdin:, stdout:, stderr:) }
 
     before do
       command_connector.connect(command_class)
+      allow(command_connector).to receive(:exit)
     end
 
     context "when running the command with implicit #run with a formatter and inputs" do
@@ -69,16 +74,56 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       end
 
       it "runs the command" do
-        expect(response.status).to be(0)
         expect(response.body).to eq("---\n:sum: 33\n")
+        expect(command_connector).to have_received(:exit).with(0)
+      end
+
+      context "when passing arguments via stdin" do
+        let(:argv) { ["--stdin", "SomeCommand"] }
+
+        let(:stdin) do
+          StringIO.new('
+            {
+              "foo": "some foo1",
+              "bar": 1,
+              "baz": {
+                "foo": "some foo2",
+                "bar": "some bar2",
+                "baz": {
+                  "foo": [10, 11, 12],
+                  "bar": "some bar3"
+                }
+              }
+            }
+          ')
+        end
+
+        let(:format) { nil }
+
+        it "runs the command" do
+          expect(response.body).to eq("---\n:sum: 33\n")
+          expect(stdout.string).to eq(response.body)
+          expect(command_connector).to have_received(:exit).with(0)
+        end
+
+        context "when json format" do
+          let(:argv) { ["-f", format, "--stdin", "SomeCommand"] }
+          let(:format) { "json" }
+
+          it "runs the command" do
+            expect(response.body).to eq('{"sum":33}')
+            expect(stdout.string.chomp).to eq(response.body)
+            expect(command_connector).to have_received(:exit).with(0)
+          end
+        end
       end
 
       context "when there's additional bad arguments" do
         let(:argv) { ["SomeCommand", "--bar", "10", "extra junk"] }
 
         it "is an error" do
-          expect(response.status).to be(6)
           expect(response.body).to eq("Unexpected argument: extra junk")
+          expect(command_connector).to have_received(:exit).with(6)
         end
       end
 
@@ -99,6 +144,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         it "works all the way down" do
           expect(response.status).to be(0)
           expect(response.body).to eq("---\n:sum: 3\n")
+          expect(command_connector).to have_received(:exit).with(0)
         end
       end
 
@@ -133,6 +179,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
       it "is an error" do
         expect(response.status).to be(6)
+        expect(command_connector).to have_received(:exit).with(6)
         expect(response.body).to match("Missing command to run")
       end
     end
@@ -142,6 +189,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
       it "is an error" do
         expect(response.status).to be(6)
+        expect(command_connector).to have_received(:exit).with(6)
         expect(response.body).to match("Found invalid option --bad")
       end
     end
@@ -151,6 +199,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
       it "is an error" do
         expect(response.status).to be(6)
+        expect(command_connector).to have_received(:exit).with(6)
         expect(response.body).to match("Could not find command")
       end
     end
@@ -160,6 +209,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
       it "is an error" do
         expect(response.status).to be(6)
+        expect(command_connector).to have_received(:exit).with(6)
         expect(response.body).to match("Missing command or type to describe")
       end
     end
@@ -169,6 +219,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
       it "is an error" do
         expect(response.status).to be(6)
+        expect(command_connector).to have_received(:exit).with(6)
         expect(response.body).to match("Unexpected argument: 10")
       end
     end
@@ -178,6 +229,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
       it "is an error" do
         expect(response.status).to be(6)
+        expect(command_connector).to have_received(:exit).with(6)
         expect(response.body).to match("Unknown format: asdf")
       end
     end
@@ -187,6 +239,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
       it "is an error" do
         expect(response.status).to be(1)
+        expect(command_connector).to have_received(:exit).with(1)
         expect(response.body).to match('At bar: Cannot cast "asdf"')
       end
     end
