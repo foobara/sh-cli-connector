@@ -4,10 +4,13 @@ module Foobara
       # TODO: this needs a better name... it's doing more than building.
       def build_response(request)
         response = super
+        status = response.status
+        out = response.status.zero? ? request.stdout : request.stderr
+
+        out.puts response.body
 
         if request.exit
-          puts response.body
-          exit response.status
+          exit status
         end
 
         response

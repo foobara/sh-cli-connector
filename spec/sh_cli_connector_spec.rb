@@ -78,6 +78,46 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         expect(command_connector).to have_received(:exit).with(0)
       end
 
+      context "when passing arguments via stdin" do
+        let(:argv) { ["--stdin", "SomeCommand"] }
+
+        let(:stdin) do
+          StringIO.new('
+            {
+              "foo": "some foo1",
+              "bar": 1,
+              "baz": {
+                "foo": "some foo2",
+                "bar": "some bar2",
+                "baz": {
+                  "foo": [10, 11, 12],
+                  "bar": "some bar3"
+                }
+              }
+            }
+          ')
+        end
+
+        let(:format) { nil }
+
+        it "runs the command" do
+          expect(response.body).to eq("---\n:sum: 33\n")
+          expect(stdout.string).to eq(response.body)
+          expect(command_connector).to have_received(:exit).with(0)
+        end
+
+        context "when json format" do
+          let(:argv) { ["-f", format, "--stdin", "SomeCommand"] }
+          let(:format) { "json" }
+
+          it "runs the command" do
+            expect(response.body).to eq('{"sum":33}')
+            expect(stdout.string.chomp).to eq(response.body)
+            expect(command_connector).to have_received(:exit).with(0)
+          end
+        end
+      end
+
       context "when there's additional bad arguments" do
         let(:argv) { ["SomeCommand", "--bar", "10", "extra junk"] }
 
