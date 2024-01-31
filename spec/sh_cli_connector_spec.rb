@@ -5,7 +5,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
   context "when there is a connected command" do
     let(:command_connector) do
-      described_class.new
+      described_class.new(program_name: "test-cli")
     end
 
     let(:stdin) { StringIO.new }
@@ -15,7 +15,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     let(:inputs_proc) do
       proc do
         foo :string, default: "asdf"
-        bar :integer, :required
+        bar :integer, :required, "just some attribute named bar"
         baz do
           foo :symbol
           bar :symbol
@@ -31,6 +31,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       ip = inputs_proc
 
       stub_class "SomeCommand", Foobara::Command do
+        description "Just some command class"
         inputs(&ip)
 
         def execute
@@ -44,6 +45,18 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     before do
       command_connector.connect(command_class)
       allow(command_connector).to receive(:exit)
+    end
+
+    context "with no args" do
+      let(:argv) { [] }
+
+      it "performs the help action" do
+        expect(response.request.action).to eq("help")
+        # TODO: register help with the CLI serializer
+        expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS]")
+        expect(response.body).to include("Available actions:")
+        expect(response.body).to include("--stdin")
+      end
     end
 
     context "when running the command with implicit #run with a formatter and inputs" do
@@ -170,7 +183,87 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       it "sets the help action" do
         expect(response.request.action).to eq("help")
         # TODO: register help with the CLI serializer
-        expect(response.body).to match("helping!!")
+        expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS]")
+        expect(response.body).to include("Available actions:")
+        expect(response.body).to include("--stdin")
+      end
+    end
+
+    context "when asking for help with a command" do
+      let(:argv) { %w[help SomeCommand] }
+
+      it "gives help text for the command" do
+        expect(response.status).to be(0)
+        expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] SomeCommand")
+        expect(response.body).to include("Just some command class")
+        expect(response.body).to match(/-b,\s*--bar BAR\s*just some attribute named bar/)
+      end
+    end
+
+    context "when asking for help with a command that doesn't exist" do
+      let(:argv) { %w[help SomeCommandThatDoesntExist] }
+
+      it "gives general help text with a warning about not finding the command" do
+        expect(response.status).to be(0)
+        expect(response.body).to include("WARNING: Unexpected argument: SomeCommandThatDoesntExist")
+        expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] [ACTION] [COMMAND_OR_TYPE] [COMMAND_INPUTS]")
+        expect(response.body).to include("Available actions:")
+        expect(response.body).to include("--help")
+      end
+    end
+
+    context "when asking for help with the run action" do
+      let(:argv) { %w[help run] }
+
+      it "gives help for the run action" do
+        expect(response.status).to be(0)
+        expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] run COMMAND_NAME [COMMAND_INPUTS]")
+        expect(response.body).to_not include("Available actions:")
+        expect(response.body).to include("--help")
+      end
+    end
+
+    context "when asking for help with the describe action" do
+      let(:argv) { %w[help describe] }
+
+      it "gives help for the describe action" do
+        expect(response.status).to be(0)
+        expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] describe COMMAND_OR_TYPE_NAME")
+        expect(response.body).to_not include("Available actions:")
+        expect(response.body).to include("--help")
+      end
+    end
+
+    context "when asking for help with the ping action" do
+      let(:argv) { %w[help ping] }
+
+      it "gives help for the ping action" do
+        expect(response.status).to be(0)
+        expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] ping")
+        expect(response.body).to_not include("Available actions:")
+        expect(response.body).to include("--help")
+      end
+    end
+
+    context "when asking for help with the query_git_commit_info action" do
+      let(:argv) { %w[help query_git_commit_info] }
+
+      it "gives help for the query_git_commit_info action" do
+        expect(response.status).to be(0)
+        expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] query_git_commit_info")
+        expect(response.body).to_not include("Available actions:")
+        expect(response.body).to include("--help")
+      end
+    end
+
+    context "when asking for help with the help action" do
+      let(:argv) { %w[help help] }
+
+      it "gives help for the help action" do
+        expect(response.status).to be(0)
+        expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] help [ACTION_OR_COMMAND]")
+        expect(response.body).to_not include("Available actions:")
+        expect(response.body).to include("--help")
       end
     end
 
