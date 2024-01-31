@@ -10,7 +10,8 @@ module Foobara
           end
         end
 
-        attr_accessor :parser, :result
+        attr_accessor :result
+        attr_writer :parser
 
         def parse(argv)
           self.parser = nil
