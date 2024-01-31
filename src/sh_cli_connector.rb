@@ -1,6 +1,13 @@
 module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
+      attr_accessor :program_name
+
+      def initialize(*, program_name: File.basename($PROGRAM_NAME), **opts, &)
+        self.program_name = program_name
+        super(*, **opts, &)
+      end
+
       # TODO: this needs a better name... it's doing more than building.
       def build_response(request)
         response = super

@@ -42,6 +42,10 @@ module Foobara
                                  Serializer.serializer_from_symbol(input_format)
                                end
 
+            unless serializer_class
+              raise ParseError, "Unknown input format: #{input_format}"
+            end
+
             serializer_class.new(nil)
           end
         end
@@ -56,6 +60,10 @@ module Foobara
                                else
                                  Serializer.serializer_from_symbol(output_format)
                                end
+
+            unless serializer_class
+              raise ParseError, "Unknown output format: #{output_format}"
+            end
 
             serializer_class.new(nil)
           end
@@ -80,20 +88,29 @@ module Foobara
         private
 
         def parse!
-          globalish_parser = GlobalishParser.new
+          if argv.empty?
+            self.action = "help"
+            self.globalish_options = {}
+          else
+            globalish_parser = GlobalishParser.new
 
-          result = globalish_parser.parse(argv)
+            result = globalish_parser.parse(argv)
 
-          self.globalish_options = result.parsed
+            self.globalish_options = result.parsed
 
-          action_parser = ActionParser.new
+            action_parser = ActionParser.new
 
-          result = action_parser.parse(result.remainder, starting_action: result.parsed[:help] ? "help" : nil)
+            result = action_parser.parse(result.remainder, starting_action: result.parsed[:help] ? "help" : nil)
 
-          self.action = result.action
-          self.argument = result.argument
-          self.action_options = result.parsed
-          self.inputs_argv = result.remainder
+            self.action = result.action
+            self.argument = result.argument
+            self.action_options = result.parsed
+            self.inputs_argv = result.remainder
+          end
+
+          if action == "help"
+            globalish_options[:output_format] = "noop"
+          end
         end
       end
     end
