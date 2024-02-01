@@ -102,6 +102,8 @@ module Foobara
 
           if action == "help"
             globalish_options[:output_format] = "noop"
+          elsif action == "list"
+            globalish_options[:output_format] = "cli_tabular"
           end
 
           set_serializers

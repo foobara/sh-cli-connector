@@ -267,6 +267,16 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       end
     end
 
+    context "when asking for a list of commands" do
+      let(:argv) { %w[list] }
+
+      it "gives a list of commands" do
+        expect(response.status).to be(0)
+        expect(response.body).to eq("SomeCommand\n")
+        expect(response.request.action).to eq("list")
+      end
+    end
+
     context "when running with --atomic" do
       let(:argv) { ["--atomic", "run", "SomeCommand", "--bar", "5"] }
 
