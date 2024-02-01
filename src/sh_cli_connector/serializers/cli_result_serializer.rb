@@ -9,47 +9,73 @@ module Foobara
             io = StringIO.new
 
             print(io, serializable)
+            io.puts
 
             io.string
           end
 
           private
 
-          def print(io, object, depth = nil, after_colon: false)
+          def print(io, object, padding = nil, after_colon: false)
             case object
             when ::Array
-              if after_colon
-                io.puts
+              if padding
+                if after_colon
+                  io.puts " ["
+                else
+                  io.puts "#{padding}["
+                end
               end
 
-              depth = depth ? depth + 2 : 0
+              child_padding = padding ? "#{padding}  " : ""
 
-              object.each do |element|
-                print(io, element, depth)
+              object.each.with_index do |element, index|
+                print(io, element, child_padding)
+
+                if index < object.size - 1
+                  io.puts ","
+                elsif padding
+                  io.puts
+                end
+              end
+
+              if padding
+                io.write "#{padding}]"
               end
             when ::Hash
-              if after_colon
-                io.puts
+              if padding
+                if after_colon
+                  io.puts " {"
+                else
+                  io.puts "#{padding}{"
+                end
               end
 
-              depth = depth ? depth + 2 : 0
+              child_padding = padding ? "#{padding}  " : ""
 
-              padding = " " * depth
-
-              object.each_pair do |key, value|
-                io.write padding
+              object.each_pair.with_index do |(key, value), index|
+                io.write child_padding
                 io.write key
                 io.write ":"
-                print(io, value, depth, after_colon: true)
+                print(io, value, child_padding, after_colon: true)
+                if index < object.size - 1
+                  io.puts ","
+                elsif padding
+                  io.puts
+                end
+              end
+
+              if padding
+                io.write "#{padding}}"
               end
             when ::String, ::Symbol, ::Numeric, ::TrueClass, ::FalseClass, ::NilClass
               if after_colon
                 io.write " "
               else
-                io.write " " * depth
+                io.write padding
               end
 
-              io.puts object.inspect
+              io.write object.inspect
             else
               # :nocov:
               raise "Unsupported type: #{object.class}"

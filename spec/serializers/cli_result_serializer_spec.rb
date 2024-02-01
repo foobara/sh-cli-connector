@@ -9,8 +9,8 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliResul
     it {
       is_expected.to eq(
         <<~OUTPUT
-          "foo"
-          "bar"
+          "foo",
+          "bar",
           1
         OUTPUT
       )
@@ -32,16 +32,21 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliResul
     end
 
     it {
-      is_expected.to eq(
+      expect(subject).to eq(
         <<~OUTPUT
-          a:
-              b:
-                :foo
+          a: [
+            {
+              b: [
+                :foo,
                 :bar
+              ]
+            },
             10
-          b: :baz
-          c:
+          ],
+          b: :baz,
+          c: {
             d: "e"
+          }
         OUTPUT
       )
     }
