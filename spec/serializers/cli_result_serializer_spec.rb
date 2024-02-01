@@ -22,7 +22,8 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliResul
       {
         a: [
           { b: %i[foo bar] },
-          10
+          10,
+          [1, 2, 3]
         ],
         b: :baz,
         c: {
@@ -32,7 +33,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliResul
     end
 
     it {
-      expect(subject).to eq(
+      is_expected.to eq(
         <<~OUTPUT
           a: [
             {
@@ -41,7 +42,12 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliResul
                 :bar
               ]
             },
-            10
+            10,
+            [
+              1,
+              2,
+              3
+            ]
           ],
           b: :baz,
           c: {
