@@ -41,8 +41,12 @@ module Foobara
           parser.raise_unknown = false
           parser.set_summary_indent "  "
 
-          parser.on("-h", "--help", "Show this message") do |help|
-            result.parsed[:help] = help
+          parser.on("-h", "--help", "Show this message") do
+            result.parsed[:action] = "help"
+          end
+
+          parser.on("-l", "--list", "List all commands") do
+            result.parsed[:action] = "list"
           end
 
           parser.on("-f FORMAT", "--format FORMAT", "Set the input/output format (such as yaml or json)") do |format|

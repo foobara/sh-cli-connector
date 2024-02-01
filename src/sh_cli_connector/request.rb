@@ -79,6 +79,10 @@ module Foobara
           @globalish_parser ||= GlobalishParser.new
         end
 
+        def action_parser
+          @action_parser ||= ActionParser.new
+        end
+
         private
 
         def parse!
@@ -90,9 +94,9 @@ module Foobara
 
             self.globalish_options = result.parsed
 
-            action_parser = ActionParser.new
+            starting_action = globalish_options[:action]
 
-            result = action_parser.parse(result.remainder, starting_action: result.parsed[:help] ? "help" : nil)
+            result = action_parser.parse(result.remainder, starting_action:)
 
             self.action = result.action
             self.argument = result.argument
@@ -106,7 +110,22 @@ module Foobara
             globalish_options[:output_format] = "cli_tabular"
           end
 
+          validate_parse_result!
+
           set_serializers
+        end
+
+        def validate_parse_result!
+          if action == "help" || action == "list"
+            # This gives some leniency around where the global options are when there's no command
+            result  = globalish_parser.parse(inputs_argv)
+
+            if result.remainder.any?
+              raise ParseError, "Found invalid options #{globalish_parser.remainder}"
+            end
+
+            globalish_options.merge!(result.parsed)
+          end
         end
 
         def set_serializers
