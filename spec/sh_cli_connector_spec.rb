@@ -272,7 +272,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
       it "gives a list of commands" do
         expect(response.status).to be(0)
-        expect(response.body).to eq("SomeCommand\n")
+        expect(response.body).to eq("SomeCommand \n")
         expect(response.request.action).to eq("list")
       end
 
@@ -281,7 +281,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
         it "gives commands and their descriptions" do
           expect(response.status).to be(0)
-          expect(response.body).to eq("SomeCommand\nJust some command class\n")
+          expect(response.body).to eq("SomeCommand Just some command class\n")
           expect(response.request.action).to eq("list")
         end
       end
@@ -292,16 +292,16 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
       it "gives a list of commands" do
         expect(response.status).to be(0)
-        expect(response.body).to eq("SomeCommand\n")
+        expect(response.body).to eq("SomeCommand \n")
         expect(response.request.action).to eq("list")
       end
 
       context "when verbose" do
         let(:argv) { %w[-l --verbose] }
 
-        it "gives commands and their descriptions", :focus do
+        it "gives commands and their descriptions" do
           expect(response.status).to be(0)
-          expect(response.body).to eq("SomeCommand\nJust some command class\n")
+          expect(response.body).to eq("SomeCommand Just some command class\n")
           expect(response.request.action).to eq("list")
         end
       end
