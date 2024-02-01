@@ -50,7 +50,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     context "with no args" do
       let(:argv) { [] }
 
-      it "performs the help action" do
+      it "performs the help action", :focus do
         expect(response.request.action).to eq("help")
         # TODO: register help with the CLI serializer
         expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS]")
