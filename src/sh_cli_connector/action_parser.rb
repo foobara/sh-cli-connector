@@ -64,19 +64,20 @@ module Foobara
           result = Result.new
           result.action = starting_action
 
-          result.remainder = parser.order(argv) do |nonopt|
+          result.remainder = parser.order(argv) do |positional_arg|
             if result.action.nil?
-              if %w[run describe manifest help].include?(nonopt)
-                result.action = nonopt
+              # TODO: refactor this list of actions to a more reusable place
+              if %w[run describe manifest help list].include?(positional_arg)
+                result.action = positional_arg
               else
                 result.action = "run"
-                result.argument = nonopt
+                result.argument = positional_arg
               end
             elsif result.argument.nil?
-              result.argument = nonopt
+              result.argument = positional_arg
               parser.terminate
             else
-              parser.terminate(nonopt)
+              parser.terminate(positional_arg)
             end
           end
 
