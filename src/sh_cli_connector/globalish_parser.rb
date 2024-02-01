@@ -61,6 +61,28 @@ module Foobara
           parser.on("--stdin", "Read and parse inputs from stdin") do
             result.parsed[:stdin] = true
           end
+
+          parser.on("--verbose", "Enable verbose output") do
+            result.parsed[:verbose] = true
+          end
+
+          allowed_entity_depths = %w[aggregate atomic record-store]
+          parser.on("--entity-depth DEPTH", allowed_entity_depths, "Set the entity depth") do |depth|
+            depth = "record_store" if depth == "record-store"
+            result.parsed[:entity_depth] = depth
+          end
+
+          parser.on("--atomic", "Set the entity depth to atomic") do
+            result.parsed[:entity_depth] = "atomic"
+          end
+
+          parser.on("--aggregate", "Set the entity depth to aggregate") do
+            result.parsed[:entity_depth] = "aggregate"
+          end
+
+          parser.on("--record-store", "Set the entity depth to record-store") do
+            result.parsed[:entity_depth] = "record_store"
+          end
         end
 
         def validate_formats!

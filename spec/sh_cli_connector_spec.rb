@@ -267,6 +267,54 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       end
     end
 
+    context "when running with --atomic" do
+      let(:argv) { ["--atomic", "run", "SomeCommand", "--bar", "5"] }
+
+      it "sets an atomic serializer" do
+        expect(response.status).to be(0)
+        expect(command_connector).to have_received(:exit).with(0)
+        expect(response.request.serializers).to include("atomic")
+      end
+    end
+
+    context "when running with --aggregate" do
+      let(:argv) { ["--aggregate", "run", "SomeCommand", "--bar", "5"] }
+
+      it "sets an aggregate serializer" do
+        expect(response.status).to be(0)
+        expect(command_connector).to have_received(:exit).with(0)
+        expect(response.request.serializers).to include("aggregate")
+      end
+    end
+
+    context "when running with --record-store" do
+      let(:argv) { ["--record-store", "run", "SomeCommand", "--bar", "5"] }
+
+      it "sets a record store serializer" do
+        expect(response.status).to be(0)
+        expect(command_connector).to have_received(:exit).with(0)
+        expect(response.request.serializers).to include("record_store")
+      end
+    end
+
+    context "when setting entity depth to record-store" do
+      let(:argv) { ["--entity-depth", "record-store", "run", "SomeCommand", "--bar", "5"] }
+
+      it "sets a record store serializer" do
+        expect(response.status).to be(0)
+        expect(command_connector).to have_received(:exit).with(0)
+        expect(response.request.serializers).to include("record_store")
+      end
+    end
+
+    context "when setting --verbose" do
+      let(:argv) { ["--verbose"] }
+
+      it "sets the verbose flag" do
+        expect(response.request.globalish_options[:verbose]).to be(true)
+      end
+    end
+
     context "when not giving a command to run" do
       let(:argv) { ["run"] }
 
