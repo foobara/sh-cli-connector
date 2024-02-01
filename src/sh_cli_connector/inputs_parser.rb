@@ -49,32 +49,34 @@ module Foobara
           parser.raise_unknown = false
           parser.set_summary_indent "  "
 
-          short_options_used = Set.new
-          required = inputs_type.declaration_data[:required] || []
-
-          inputs_type.element_types.each_pair do |attribute_name, attribute_type|
-            attribute_to_option(
-              attribute_name,
-              attribute_type:,
-              short_options_used:,
-              is_required: required.include?(attribute_name)
-            )
+          if inputs_type.element_types.any?
+            attribute_to_option
           end
         end
 
-        def attribute_to_option(attribute_name, attribute_type:, short_options_used:, is_required:, prefix: [])
+        def attribute_to_option(
+          attribute_name = nil,
+          attribute_type: inputs_type,
+          is_required: true,
+          short_options_used: Set.new,
+          default: nil,
+          prefix: []
+        )
           if attribute_type.extends_symbol?(:attributes)
             sub_required_attributes = if is_required
                                         attribute_type.declaration_data[:required] || []
                                       end || []
+
+            defaults = attribute_type.declaration_data[:defaults] || {}
 
             attribute_type.element_types.each_pair do |sub_attribute_name, sub_attribute_type|
               attribute_to_option(
                 sub_attribute_name,
                 attribute_type: sub_attribute_type,
                 short_options_used:,
-                prefix: [*prefix, attribute_name],
-                is_required: is_required && sub_required_attributes.include?(sub_attribute_name)
+                prefix: [*prefix, *attribute_name],
+                is_required: is_required && sub_required_attributes.include?(sub_attribute_name),
+                default: defaults[sub_attribute_name]
               )
             end
           else
@@ -94,10 +96,33 @@ module Foobara
               args << "-#{short_option} #{argument_text}"
             end
 
+            desc = []
             description = attribute_type.description
 
             if description && !BuiltinTypes.builtin?(attribute_type)
-              args << description
+              desc << description
+            end
+
+            if is_required
+              desc << "Required"
+            end
+
+            if default
+              desc << "Default: #{default.inspect}"
+            end
+
+            unless desc.empty?
+              desc.map!.with_index do |d, index|
+                break if index == desc.size - 1
+
+                if d =~ /[\.!?\]\}:]$/
+                  d
+                else
+                  "#{d}."
+                end
+              end
+
+              args << desc.join(" ")
             end
 
             # TODO: support these

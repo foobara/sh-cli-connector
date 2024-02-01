@@ -20,7 +20,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
           foo :symbol
           bar :symbol
           baz :required do
-            foo [:integer], :required
+            foo [:integer], :required, "Deeply nested foo!", default: [1, 2, 3]
             bar :symbol
           end
         end
@@ -196,7 +196,8 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         expect(response.status).to be(0)
         expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] SomeCommand")
         expect(response.body).to include("Just some command class")
-        expect(response.body).to match(/-b,\s*--bar BAR\s*just some attribute named bar/)
+        expect(response.body).to match(/-f,\s*--foo FOO\s*Default: "asdf"/)
+        expect(response.body).to match(/-b,\s*--bar BAR\s*just some attribute named bar\. Required/)
       end
     end
 
