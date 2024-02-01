@@ -37,7 +37,7 @@ module Foobara
 
             serializer_class = if input_format.nil?
                                  # TODO: refactor this to some default setting
-                                 Serializers::YamlSerializer
+                                 Foobara::CommandConnectors::Serializers::YamlSerializer
                                else
                                  Serializer.serializer_from_symbol(input_format)
                                end
@@ -45,27 +45,6 @@ module Foobara
             unless serializer_class
               # :nocov:
               raise ParseError, "Unknown input format: #{input_format}"
-              # :nocov:
-            end
-
-            serializer_class.new(nil)
-          end
-        end
-
-        def output_serializer
-          @output_serializer ||= begin
-            output_format = globalish_options[:output_format]
-
-            serializer_class = if output_format.nil?
-                                 # TODO: refactor this to some default setting
-                                 Serializers::YamlSerializer
-                               else
-                                 Serializer.serializer_from_symbol(output_format)
-                               end
-
-            unless serializer_class
-              # :nocov:
-              raise ParseError, "Unknown output format: #{output_format}"
               # :nocov:
             end
 
@@ -124,6 +103,22 @@ module Foobara
           if action == "help"
             globalish_options[:output_format] = "noop"
           end
+
+          set_serializers
+        end
+
+        def set_serializers
+          format = globalish_options[:output_format]
+
+          format ||= if globalish_options[:stdin]
+                       :yaml
+                     else
+                       [Serializers::CliResultSerializer, Serializers::CliErrorsSerializer]
+                     end
+
+          entity_depth = globalish_options[:entity_depth]
+
+          @serializers = [*format, *entity_depth]
         end
       end
     end

@@ -42,41 +42,32 @@ module Foobara
           end
         end
 
-        command = request.command
-        outcome = command.outcome
+        body = request.response_body
 
-        # TODO: feels awkward to call this here... Maybe use result/errors transformers instead??
-        # Or call the serializer here??
-        body = command.respond_to?(:serialize_result) ? command.serialize_result : outcome.result
-        body = request.output_serializer.serialize(body)
-
-        status = if outcome.success?
+        status = if request.success?
                    0
                  else
-                   errors = outcome.errors
+                   errors = request.error_collection.error_array
+                   error = errors.first
 
-                   if errors.size == 1
-                     error = errors.first
-
-                     case error
-                     when CommandConnector::NotFoundError, Foobara::Command::Concerns::Entities::NotFoundError
-                       # TODO: we should not be coupled to Entities here...
-                       # :nocov:
-                       2
-                       # :nocov:
-                     when CommandConnector::UnauthenticatedError
-                       # :nocov:
-                       3
-                       # :nocov:
-                     when CommandConnector::NotAllowedError
-                       # :nocov:
-                       4
-                       # :nocov:
-                     when CommandConnector::UnknownError
-                       # :nocov:
-                       5
-                       # :nocov:
-                     end
+                   case error
+                   when CommandConnector::NotFoundError, Foobara::Command::Concerns::Entities::NotFoundError
+                     # TODO: we should not be coupled to Entities here...
+                     # :nocov:
+                     2
+                   # :nocov:
+                   when CommandConnector::UnauthenticatedError
+                     # :nocov:
+                     3
+                   # :nocov:
+                   when CommandConnector::NotAllowedError
+                     # :nocov:
+                     4
+                   # :nocov:
+                   when CommandConnector::UnknownError
+                     # :nocov:
+                     5
+                     # :nocov:
                    end || 1
                  end
 
