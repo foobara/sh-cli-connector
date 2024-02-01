@@ -272,7 +272,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
       it "gives a list of commands" do
         expect(response.status).to be(0)
-        expect(response.body).to eq("SomeCommand \n")
+        expect(response.body).to eq("SomeCommand\n")
         expect(response.request.action).to eq("list")
       end
 
@@ -292,7 +292,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
       it "gives a list of commands" do
         expect(response.status).to be(0)
-        expect(response.body).to eq("SomeCommand \n")
+        expect(response.body).to eq("SomeCommand\n")
         expect(response.request.action).to eq("list")
       end
 

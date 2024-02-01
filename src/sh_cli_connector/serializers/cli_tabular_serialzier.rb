@@ -144,15 +144,12 @@ module Foobara
 
                 width = widths[index]
 
-                binding.pry
-
                 column.scan(row_regexes[index]).each do |rows_worth_of_text|
                   if rows_worth_of_text.size > width
                     parts = rows_worth_of_text.scan(/.{1,#{width - 1}}/)
 
                     parts_size = parts.size
 
-                    binding.pry
                     parts.each.with_index do |rows_worth, index|
                       rows_worth << "-" unless index == parts_size - 1
                       cell << rows_worth
@@ -163,8 +160,6 @@ module Foobara
                 end
               end
             end
-
-            binding.pry
 
             cellified_table
           end

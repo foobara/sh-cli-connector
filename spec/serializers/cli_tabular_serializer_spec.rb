@@ -21,8 +21,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliTabul
   context "when bigger than terminal size" do
     let(:terminal_width) { 20 }
 
-    it "serializes the table", :focus do
-      binding.pry
+    it "serializes the table" do
       expect(result).to eq(
         <<~OUTPUT
           foof- barb- bazbaz
