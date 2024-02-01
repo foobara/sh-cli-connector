@@ -267,6 +267,15 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       end
     end
 
+    context "when running with --atomic" do
+      let(:argv) { ["--atomic", "run", "SomeCommand", "--bar", "5"] }
+
+      it "sets an atomic serializer" do
+        expect(response.status).to be(0)
+        expect(command_connector).to have_received(:exit).with(0)
+      end
+    end
+
     context "when not giving a command to run" do
       let(:argv) { ["run"] }
 

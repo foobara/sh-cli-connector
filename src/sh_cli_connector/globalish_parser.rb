@@ -66,13 +66,13 @@ module Foobara
             result.parsed[:verbose] = true
           end
 
-          allowed_entity_depths = %w[aggregate atom record-store]
+          allowed_entity_depths = %w[aggregate atomic record-store]
           parser.on("--entity-depth DEPTH", allowed_entity_depths, "Set the entity depth") do |depth|
             result.parsed[:entity_depth] = depth
           end
 
-          parser.on("--atom", "Set the entity depth to atom") do
-            result.parsed[:entity_depth] = "atom"
+          parser.on("--atomic", "Set the entity depth to atomic") do
+            result.parsed[:entity_depth] = "atomic"
           end
 
           parser.on("--aggregate", "Set the entity depth to aggregate") do
