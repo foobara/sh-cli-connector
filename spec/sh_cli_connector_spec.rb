@@ -273,6 +273,27 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       it "sets an atomic serializer" do
         expect(response.status).to be(0)
         expect(command_connector).to have_received(:exit).with(0)
+        expect(response.request.serializers).to include("atomic")
+      end
+    end
+
+    context "when running with --aggregate" do
+      let(:argv) { ["--aggregate", "run", "SomeCommand", "--bar", "5"] }
+
+      it "sets an aggregate serializer" do
+        expect(response.status).to be(0)
+        expect(command_connector).to have_received(:exit).with(0)
+        expect(response.request.serializers).to include("aggregate")
+      end
+    end
+
+    context "when running with --record-store" do
+      let(:argv) { ["--record-store", "run", "SomeCommand", "--bar", "5"] }
+
+      it "sets a record store serializer" do
+        expect(response.status).to be(0)
+        expect(command_connector).to have_received(:exit).with(0)
+        expect(response.request.serializers).to include("record_store")
       end
     end
 

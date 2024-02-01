@@ -80,7 +80,7 @@ module Foobara
           end
 
           parser.on("--record-store", "Set the entity depth to record-store") do
-            result.parsed[:entity_depth] = "record-store"
+            result.parsed[:entity_depth] = "record_store"
           end
         end
 
