@@ -9,6 +9,9 @@ module Foobara
             io = StringIO.new
 
             print(io, serializable)
+
+            io.puts
+            io.string
           end
 
           private
