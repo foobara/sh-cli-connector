@@ -88,8 +88,6 @@ module Foobara
           end
 
           def final_width(widths)
-            max_total_width = terminal_width
-
             all_but_last_width = widths[0..-2].sum
             terminal_width - all_but_last_width
           end
