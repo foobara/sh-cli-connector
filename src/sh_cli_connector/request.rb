@@ -39,7 +39,7 @@ module Foobara
 
             serializer_class = if input_format.nil?
                                  # TODO: refactor this to some default setting
-                                 Serializers::YamlSerializer
+                                 Foobara::CommandConnectors::Serializers::YamlSerializer
                                else
                                  Serializer.serializer_from_symbol(input_format)
                                end
@@ -108,8 +108,14 @@ module Foobara
         end
 
         def set_serializers
-          format = globalish_options[:output_format] ||
-                   [Serializers::CliResultSerializer, Serializers::CliErrorsSerializer]
+          format = globalish_options[:output_format]
+
+          format ||= if globalish_options[:stdin]
+                       :yaml
+                     else
+                       [Serializers::CliResultSerializer, Serializers::CliErrorsSerializer]
+                     end
+
           entity_depth = globalish_options[:entity_depth]
 
           @serializers = [*format, *entity_depth]

@@ -3,7 +3,7 @@ module Foobara
     class ShCliConnector < CommandConnector
       module Serializers
         # TODO: move this to its own project
-        class ErrorsSerializer < Serializer
+        class CliErrorsSerializer < CommandConnectors::Serializers::ErrorsSerializer
           def serialize(errors)
             Util.to_sentence(errors.map(&:message))
           end

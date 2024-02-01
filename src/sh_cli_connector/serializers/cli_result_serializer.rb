@@ -2,7 +2,7 @@ module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
       module Serializers
-        class ResultSerializer < CommandConnectors::Serializers::AtomicSerializer
+        class CliResultSerializer < CommandConnectors::Serializers::AtomicSerializer
           def serialize(object)
             serializable = super
 

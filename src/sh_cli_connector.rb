@@ -42,26 +42,12 @@ module Foobara
           end
         end
 
-        command = request.command
-        outcome = command.outcome
+        body = request.response_body
 
-        # TODO: feels awkward to call this here... Maybe use result/errors transformers instead??
-        # Or call the serializer here??
-        # TODO: should we pass entire outcomes to serializers?
-        body = command.respond_to?(:serialize_result) ? command.serialize_result : outcome.result
-
-        unless outcome.success?
-          binding.pry
-          body = Util.to_sentence(body)
-        end
-
-        body = request.output_serializer.serialize(body)
-
-        status = if outcome.success?
+        status = if request.success?
                    0
                  else
-                   errors = outcome.errors
-
+                   errors = request.error_collection.error_array
                    error = errors.first
 
                    case error
