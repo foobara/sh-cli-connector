@@ -10,7 +10,6 @@ module Foobara
 
             print(io, serializable)
 
-            io.puts
             io.string
           end
 
@@ -50,7 +49,7 @@ module Foobara
                 io.write " " * depth
               end
 
-              io.write object.inspect
+              io.puts object.inspect
             else
               # :nocov:
               raise "Unsupported type: #{object.class}"
