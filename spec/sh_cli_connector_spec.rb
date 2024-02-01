@@ -196,7 +196,8 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         expect(response.status).to be(0)
         expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] SomeCommand")
         expect(response.body).to include("Just some command class")
-        expect(response.body).to match(/-b,\s*--bar BAR\s*just some attribute named bar/)
+        expect(response.body).to match(/-f,\s*--foo FOO\s*Default: "asdf"/)
+        expect(response.body).to match(/-b,\s*--bar BAR\s*just some attribute named bar\. Required/)
       end
     end
 
