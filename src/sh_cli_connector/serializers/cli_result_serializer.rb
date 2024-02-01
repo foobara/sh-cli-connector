@@ -43,7 +43,7 @@ module Foobara
                 io.write ":"
                 print(io, value, depth, after_colon: true)
               end
-            when ::String, ::Symbol, ::Numeric, ::TrueClass, ::FalseClass
+            when ::String, ::Symbol, ::Numeric, ::TrueClass, ::FalseClass, ::NilClass
               if after_colon
                 io.write " "
               else

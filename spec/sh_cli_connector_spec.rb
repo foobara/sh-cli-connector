@@ -154,7 +154,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
         let(:argv) { ["SomeCommand", "--baz--baz--foo", "1", "2"] }
 
-        it "works all the way down", :focus do
+        it "works all the way down" do
           expect(response.status).to be(0)
           expect(response.body).to eq("sum: 3\n")
           expect(command_connector).to have_received(:exit).with(0)

@@ -29,8 +29,6 @@ module Foobara
           end
 
           super()
-
-          set_serializers
         end
 
         def input_serializer
@@ -105,6 +103,8 @@ module Foobara
           if action == "help"
             globalish_options[:output_format] = "noop"
           end
+
+          set_serializers
         end
 
         def set_serializers
