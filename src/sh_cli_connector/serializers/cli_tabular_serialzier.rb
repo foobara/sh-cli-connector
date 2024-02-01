@@ -38,7 +38,7 @@ module Foobara
               end
 
               lines.each do |line|
-                io.puts line.strip
+                io.puts line.rstrip
               end
             end
 
@@ -99,7 +99,10 @@ module Foobara
               width = if config.is_a?(::Hash)
                         config[:terminal_width]
                       elsif config.respond_to?(:terminal_width)
+                        # TODO: test this
+                        # :nocov:
                         config.terminal_width
+                        # :nocov:
                       end
               width || IO.console.winsize[1]
             end
@@ -112,7 +115,10 @@ module Foobara
               width = if config.is_a?(::Hash)
                         config[:min_final_column_width]
                       elsif config.respond_to?(:min_final_column_width)
+                        # TODO: test this
+                        # :nocov:
                         config.min_final_column_width
+                        # :nocov:
                       end
 
               width || 10

@@ -29,5 +29,25 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliTabul
         OUTPUT
       )
     end
+
+    context "when last column content is too long" do
+      let(:table) do
+        [
+          ["a", "b", "This is way too loooooooooooooooooooooooong to fit on one line."]
+        ]
+      end
+
+      it "serializes the table" do
+        expect(result).to eq(
+          <<~OUTPUT
+            a b This is way too
+                loooooooooooooooo-
+                oooooooong
+                to fit on one lin-
+                e.
+          OUTPUT
+        )
+      end
+    end
   end
 end
