@@ -121,7 +121,9 @@ module Foobara
             result  = globalish_parser.parse(inputs_argv)
 
             if result.remainder.any?
+              # :nocov:
               raise ParseError, "Found invalid options #{globalish_parser.remainder}"
+              # :nocov:
             end
 
             globalish_options.merge!(result.parsed)

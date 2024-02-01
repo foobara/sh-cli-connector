@@ -4,12 +4,13 @@ module Foobara
       module Serializers
         # TODO: refactor much of this logic to Util?
         class CliTabularSerializer < CommandConnectors::Serializer
+          PAD_SIZE = 1
+
           def serialize(table)
             io = StringIO.new
 
-            widths = column_widths(table).map { |i| i + 1 }
-
-            widths[-1] = final_width(widths)
+            widths = column_widths(table)
+            widths = adjust_to_preserve_final_column_width(widths)
 
             cellified_table = cellify(table, widths)
 
@@ -30,13 +31,14 @@ module Foobara
 
                 unless is_last_column
                   (max_lines - cell.size).times do |i|
-                    lines[max_lines - i - 1] << pad("", width)
+                    line = lines[max_lines - i - 1] ||= ""
+                    line << pad("", width)
                   end
                 end
               end
 
               lines.each do |line|
-                io.puts line
+                io.puts line.strip
               end
             end
 
@@ -64,6 +66,27 @@ module Foobara
             widths
           end
 
+          def adjust_to_preserve_final_column_width(widths)
+            adjusted_final_width = final_width(widths)
+
+            too_small_by = min_final_column_width - adjusted_final_width
+
+            if too_small_by > 0
+              reduce_each_by = too_small_by.to_f / (widths.size - 1)
+              reduce_each_by = reduce_each_by.ceil
+
+              widths = widths.map do |width|
+                width - reduce_each_by
+              end
+
+              adjusted_final_width = final_width(widths)
+            end
+
+            widths[-1] = adjusted_final_width
+
+            widths
+          end
+
           def final_width(widths)
             max_total_width = terminal_width
 
@@ -72,11 +95,34 @@ module Foobara
           end
 
           def terminal_width
-            IO.console.winsize[1]
+            @terminal_width ||= begin
+              config = declaration_data
+
+              width = if config.is_a?(::Hash)
+                        config[:terminal_width]
+                      elsif config.respond_to?(:terminal_width)
+                        config.terminal_width
+                      end
+              width || IO.console.winsize[1]
+            end
+          end
+
+          def min_final_column_width
+            @min_final_column_width ||= begin
+              config = declaration_data
+
+              width = if config.is_a?(::Hash)
+                        config[:min_final_column_width]
+                      elsif config.respond_to?(:min_final_column_width)
+                        config.min_final_column_width
+                      end
+
+              width || 10
+            end
           end
 
           def pad(string, width)
-            string.ljust(width)
+            string.ljust(width + PAD_SIZE)
           end
 
           def cellify(table, widths)
@@ -98,14 +144,17 @@ module Foobara
 
                 width = widths[index]
 
+                binding.pry
+
                 column.scan(row_regexes[index]).each do |rows_worth_of_text|
                   if rows_worth_of_text.size > width
-                    parts = rows_worth_of_text.scan(".{#{width - 1}}")
+                    parts = rows_worth_of_text.scan(/.{1,#{width - 1}}/)
 
                     parts_size = parts.size
 
+                    binding.pry
                     parts.each.with_index do |rows_worth, index|
-                      rows_worth << "-" if index == parts_size - 1
+                      rows_worth << "-" unless index == parts_size - 1
                       cell << rows_worth
                     end
                   else
@@ -114,6 +163,8 @@ module Foobara
                 end
               end
             end
+
+            binding.pry
 
             cellified_table
           end
