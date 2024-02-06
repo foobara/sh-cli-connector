@@ -1,3 +1,5 @@
+require "io/console/size"
+
 module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
@@ -104,7 +106,7 @@ module Foobara
                         config.terminal_width
                         # :nocov:
                       end
-              width || IO.console.winsize[1]
+              width || IO.console_size[1]
             end
           end
 
