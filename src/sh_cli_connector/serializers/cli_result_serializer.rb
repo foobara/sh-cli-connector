@@ -75,7 +75,7 @@ module Foobara
                 io.write padding
               end
 
-              io.write object.inspect
+              io.write object
             else
               # :nocov:
               raise "Unsupported type: #{object.class}"

@@ -51,7 +51,7 @@ module Foobara
                    error = errors.first
 
                    case error
-                   when CommandConnector::NotFoundError, Foobara::Command::Concerns::Entities::NotFoundError
+                   when CommandConnector::NotFoundError, Foobara::Entity::NotFoundError
                      # TODO: we should not be coupled to Entities here...
                      # :nocov:
                      2
