@@ -3,6 +3,12 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliResul
 
   let(:serializer) { described_class.new(nil) }
 
+  context "when object is a string" do
+    let(:object) { "foo" }
+
+    it { is_expected.to eq("foo") }
+  end
+
   context "when object is an array" do
     let(:object) { ["foo", "bar", 1] }
 

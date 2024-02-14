@@ -6,12 +6,16 @@ module Foobara
           def serialize(object)
             serializable = super
 
-            io = StringIO.new
+            if serializable.is_a?(::String)
+              serializable
+            else
+              io = StringIO.new
 
-            print(io, serializable)
-            io.puts
+              print(io, serializable)
+              io.puts
 
-            io.string
+              io.string
+            end
           end
 
           private
@@ -75,7 +79,7 @@ module Foobara
                 io.write padding
               end
 
-              io.write object
+              io.write object.inspect
             else
               # :nocov:
               raise "Unsupported type: #{object.class}"
