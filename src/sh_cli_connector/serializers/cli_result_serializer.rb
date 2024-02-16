@@ -2,6 +2,7 @@ module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
       module Serializers
+        # Should allow either atomic or aggregate
         class CliResultSerializer < CommandConnectors::Serializers::AtomicSerializer
           def serialize(object)
             serializable = super
