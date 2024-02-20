@@ -1,6 +1,6 @@
 GIT
   remote: foobara
-  revision: b9299be2d490a4f45f6fd7a76bff5f4849149ffb
+  revision: 692971ed7f8b3aad4071c8933e721088a786f248
   branch: main
   specs:
     foobara (0.0.1)
@@ -77,8 +77,6 @@ GEM
       pry (>= 0.13, < 0.15)
     racc (1.7.3)
     rack (3.0.8)
-    rack-test (2.1.0)
-      rack (>= 1.3)
     rackup (2.1.0)
       rack (>= 3)
       webrick (~> 1.8)
@@ -152,7 +150,6 @@ DEPENDENCIES
   guard-rspec
   pry
   pry-byebug
-  rack-test
   rackup
   rake
   rspec
