@@ -1,4 +1,8 @@
 RSpec.describe Foobara::CommandConnectors::ShCliConnector do
+  after do
+    Foobara.reset_alls
+  end
+
   it "has a version number" do
     expect(Foobara::ShCliConnector::VERSION).to_not be_nil
   end
@@ -13,6 +17,8 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     let(:stderr) { StringIO.new }
 
     let(:inputs_proc) do
+      some_model_class
+
       proc do
         foo :string, default: "asdf"
         bar :integer, :required, "just some attribute named bar"
@@ -23,6 +29,16 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
             foo [:integer], :required, "Deeply nested foo!", default: [1, 2, 3]
             bar :symbol
           end
+        end
+        some_model SomeModel, :required
+      end
+    end
+
+    let(:some_model_class) do
+      stub_class "SomeModel", Foobara::Model do
+        attributes do
+          foo :integer
+          bar :string, :required
         end
       end
     end
@@ -82,7 +98,9 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
           "11",
           "12",
           "--baz--baz--bar",
-          "some bar3"
+          "some bar3",
+          "--some-model--bar",
+          "some model bar"
         ]
       end
 
@@ -106,6 +124,9 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
                   "foo": [10, 11, 12],
                   "bar": "some bar3"
                 }
+              },
+              "some_model": {
+                "bar": "some model bar"
               }
             }
           ')
@@ -309,7 +330,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when running with --atomic" do
-      let(:argv) { ["--atomic", "run", "SomeCommand", "--bar", "5"] }
+      let(:argv) { ["--atomic", "run", "SomeCommand", "--bar", "5", "--some-model--bar", "some bar"] }
 
       it "sets an atomic serializer" do
         expect(response.status).to be(0)
@@ -319,7 +340,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when running with --aggregate" do
-      let(:argv) { ["--aggregate", "run", "SomeCommand", "--bar", "5"] }
+      let(:argv) { ["--aggregate", "run", "SomeCommand", "--bar", "5", "--some-model--bar", "some bar"] }
 
       it "sets an aggregate serializer" do
         expect(response.status).to be(0)
@@ -329,7 +350,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when running with --record-store" do
-      let(:argv) { ["--record-store", "run", "SomeCommand", "--bar", "5"] }
+      let(:argv) { ["--record-store", "run", "SomeCommand", "--bar", "5", "--some-model--bar", "some bar"] }
 
       it "sets a record store serializer" do
         expect(response.status).to be(0)
@@ -339,7 +360,9 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when setting entity depth to record-store" do
-      let(:argv) { ["--entity-depth", "record-store", "run", "SomeCommand", "--bar", "5"] }
+      let(:argv) do
+        ["--entity-depth", "record-store", "run", "SomeCommand", "--bar", "5", "--some-model--bar", "some bar"]
+      end
 
       it "sets a record store serializer" do
         expect(response.status).to be(0)
@@ -417,7 +440,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when there's an error" do
-      let(:argv) { ["SomeCommand", "--bar", "asdf"] }
+      let(:argv) { ["SomeCommand", "--bar", "asdf", "--some-model--bar", "some bar"] }
 
       it "is an error" do
         expect(response.status).to be(1)
