@@ -89,69 +89,31 @@ module Foobara
               )
             end
           else
-            is_boolean = attribute_type.extends_symbol?(:boolean)
-            is_array = attribute_type.extends_symbol?(:array)
+            option = InputsParser::Option.new(
+              attribute_name:,
+              attribute_type:,
+              prefix:,
+              is_required:,
+              default:
+            )
 
-            prefixed_name = [*prefix, attribute_name].join("__")
-            long_option_name = Util.kebab_case(prefixed_name)
-            short_option = attribute_name[0]
-            argument_text = Util.constantify(prefixed_name)
-            argument_text = "[#{argument_text}]" if is_boolean
+            # TODO: implement
+            long_option_paths = []
 
-            args = ["--#{long_option_name} #{argument_text}"]
-
-            unless short_options_used.include?(short_option)
-              short_options_used << short_option
-              args << "-#{short_option} #{argument_text}"
-            end
-
-            desc = []
-            description = attribute_type.description
-
-            if description && !BuiltinTypes.builtin?(attribute_type)
-              desc << description
-            end
-
-            if is_required
-              desc << "Required"
-            end
-
-            if default
-              desc << "Default: #{default.inspect}"
-            end
-
-            unless desc.empty?
-              desc.map!.with_index do |d, index|
-                break if index == desc.size - 1
-
-                if d =~ /[\.!?\]\}:]$/
-                  d
-                else
-                  "#{d}."
-                end
-              end
-
-              args << desc.join(" ")
-            end
-
-            # TODO: support these
-            # args << attributes_type.description
-            # args << attributes_type.declaration_data[:one_of] if attributes_type.declaration_data.key?(:one_of)
-
-            parser.on(*args) do |value|
-              if value.nil? && is_boolean
+            parser.on(*option.to_args(short_options_used, long_option_paths)) do |value|
+              if value.nil? && option.boolean?
                 value = true
               end
 
               h = result.parsed
 
-              prefix.each do |key|
+              option.prefix.each do |key|
                 # TODO: should we support writing to arrays by index? If so we need to check inputs type to figure
                 # out if we need to create a hash or an array here
                 h = h[key] ||= {}
               end
 
-              self.current_array = if is_array
+              self.current_array = if array?
                                      h[attribute_name] = [value]
                                    else
                                      h[attribute_name] = value
