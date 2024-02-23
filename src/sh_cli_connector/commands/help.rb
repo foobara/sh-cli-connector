@@ -1,3 +1,5 @@
+require "stringio"
+
 module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector

@@ -5,9 +5,6 @@ require "pry-byebug"
 require "rspec/its"
 require "simplecov"
 
-require "foobara/all"
-require "foobara/command_connectors"
-
 SimpleCov.start do
   # enable_coverage :branch
   minimum_coverage line: 100
