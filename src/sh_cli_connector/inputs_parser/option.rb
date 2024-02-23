@@ -45,7 +45,7 @@ module Foobara
 
           def to_args(short_options_used, full_paths)
             path = _non_colliding_path(full_paths)
-            prefixed_name = path.join("__")
+            prefixed_name = path.join("_")
             long_option_name = Util.kebab_case(prefixed_name)
             short_option = attribute_name[0]
 
