@@ -17,7 +17,7 @@ module Foobara
           end
 
           def to_args(short_options_used, _long_option_paths)
-            prefixed_name = [*prefix, attribute_name].join("__")
+            prefixed_name = long_option_path.join("__")
             long_option_name = Util.kebab_case(prefixed_name)
             short_option = attribute_name[0]
             argument_text = Util.constantify(prefixed_name)
@@ -30,9 +30,13 @@ module Foobara
               args << "-#{short_option} #{argument_text}"
             end
 
-            args << description
+            args << description if description
 
             args
+          end
+
+          def long_option_path
+            [*prefix, attribute_name]
           end
 
           def required?

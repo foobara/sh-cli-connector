@@ -46,19 +46,28 @@ module Foobara
         private
 
         def setup_parser
+          @option_set = nil
+
           parser.raise_unknown = false
           parser.set_summary_indent "  "
 
           if inputs_type.element_types.any?
             attribute_to_option
+            # This feels wrong but the parser callback needs to access our result.
+            # TODO: figure out this smell and fix it
+            option_set.prepare_parser(self)
           end
+        end
+
+        def option_set
+          # TODO: this feels wrong to pass self here...
+          @option_set ||= OptionSet.new
         end
 
         def attribute_to_option(
           attribute_name = nil,
           attribute_type: inputs_type,
           is_required: true,
-          short_options_used: Set.new,
           default: nil,
           prefix: []
         )
@@ -66,7 +75,6 @@ module Foobara
             attribute_to_option(
               attribute_name,
               attribute_type: attribute_type.element_types,
-              short_options_used:,
               prefix:,
               is_required:,
               default:
@@ -82,7 +90,6 @@ module Foobara
               attribute_to_option(
                 sub_attribute_name,
                 attribute_type: sub_attribute_type,
-                short_options_used:,
                 prefix: [*prefix, *attribute_name],
                 is_required: is_required && sub_required_attributes.include?(sub_attribute_name),
                 default: defaults[sub_attribute_name]
@@ -97,29 +104,8 @@ module Foobara
               default:
             )
 
-            # TODO: implement
-            long_option_paths = []
+            option_set << option
 
-            parser.on(*option.to_args(short_options_used, long_option_paths)) do |value|
-              if value.nil? && option.boolean?
-                value = true
-              end
-
-              h = result.parsed
-
-              option.prefix.each do |key|
-                # TODO: should we support writing to arrays by index? If so we need to check inputs type to figure
-                # out if we need to create a hash or an array here
-                h = h[key] ||= {}
-              end
-
-              self.current_array = if array?
-                                     h[attribute_name] = [value]
-                                   else
-                                     h[attribute_name] = value
-                                     nil
-                                   end
-            end
           end
         end
       end
