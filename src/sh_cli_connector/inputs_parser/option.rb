@@ -16,15 +16,45 @@ module Foobara
             # args << attributes_type.declaration_data[:one_of] if attributes_type.declaration_data.key?(:one_of)
           end
 
-          def to_args(short_options_used, _long_option_paths)
-            prefixed_name = long_option_path.join("__")
+          def _non_colliding_path(full_paths)
+            1.upto(full_path.length - 1) do |size|
+              candidate_path = _truncated_path(full_path, size)
+              match_count = _truncated_paths(full_paths, size).select { |path| path == candidate_path }.size
+
+              if match_count == 1
+                return candidate_path
+              elsif match_count == 0
+                # :nocov:
+                raise "Not expecting to reach here"
+                # :nocov:
+              end
+            end
+
+            full_path
+          end
+
+          def _truncated_paths(paths, size)
+            paths.map do |path|
+              _truncated_path(path, size)
+            end
+          end
+
+          def _truncated_path(path, size)
+            path[(-size)..]
+          end
+
+          def to_args(short_options_used, full_paths)
+            path = _non_colliding_path(full_paths)
+            prefixed_name = path.join("__")
             long_option_name = Util.kebab_case(prefixed_name)
             short_option = attribute_name[0]
+
             argument_text = Util.constantify(prefixed_name)
             argument_text = "[#{argument_text}]" if boolean?
 
             args = ["--#{long_option_name} #{argument_text}"]
 
+            # TODO: we should prioritize required options to get the short name in case of collision?
             unless short_options_used.include?(short_option)
               short_options_used << short_option
               args << "-#{short_option} #{argument_text}"
@@ -35,7 +65,7 @@ module Foobara
             args
           end
 
-          def long_option_path
+          def full_path
             [*prefix, attribute_name]
           end
 

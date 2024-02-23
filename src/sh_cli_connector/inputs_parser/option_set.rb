@@ -13,7 +13,7 @@ module Foobara
 
           def prepare_parser(result_source)
             parser = result_source.parser
-            long_option_paths = []
+            long_option_paths = options.map(&:full_path)
             short_options_used = Set.new
 
             options.each do |option|

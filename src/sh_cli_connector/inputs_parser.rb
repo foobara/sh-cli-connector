@@ -11,7 +11,6 @@ module Foobara
 
           def validate!
             unless remainder.empty?
-              # is this even possible?
               raise ParseError, "Unexpected argument: #{remainder.first}"
             end
           end

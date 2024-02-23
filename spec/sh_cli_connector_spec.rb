@@ -39,6 +39,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         attributes do
           foo :integer
           bar :string, :required
+          yo :string
         end
       end
     end
@@ -173,7 +174,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
           end
         end
 
-        let(:argv) { ["SomeCommand", "--baz--baz--foo", "1", "2"] }
+        let(:argv) { ["SomeCommand", "--foo", "1", "2"] }
 
         it "works all the way down" do
           expect(response.status).to be(0)
@@ -218,6 +219,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] SomeCommand")
         expect(response.body).to include("Just some command class")
         expect(response.body).to match(/-f,\s*--foo FOO\s*Default: "asdf"/)
+        expect(response.body).to match(/-y,\s*--yo YO/)
         expect(response.body).to match(/-b,\s*--bar BAR\s*just some attribute named bar\. Required/)
       end
     end
