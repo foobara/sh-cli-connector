@@ -67,7 +67,7 @@ module Foobara
           result.remainder = parser.order(argv) do |positional_arg|
             if result.action.nil?
               # TODO: refactor this list of actions to a more reusable place
-              if %w[run describe manifest help list].include?(positional_arg)
+              if supported_actions.include?(positional_arg)
                 result.action = positional_arg
               else
                 result.action = "run"
@@ -83,6 +83,10 @@ module Foobara
 
           result.validate!
           result
+        end
+
+        def supported_actions
+          %w[run describe manifest help list]
         end
 
         private
