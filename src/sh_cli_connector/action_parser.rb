@@ -60,12 +60,18 @@ module Foobara
           setup_parser
         end
 
+        def normalize_action(action)
+          action
+        end
+
         def parse(argv, starting_action: nil)
           result = Result.new
           result.action = starting_action
 
           result.remainder = parser.order(argv) do |positional_arg|
             if result.action.nil?
+              positional_arg = normalize_action(positional_arg)
+
               # TODO: refactor this list of actions to a more reusable place
               if supported_actions.include?(positional_arg)
                 result.action = positional_arg
