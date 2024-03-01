@@ -1,4 +1,7 @@
 # TODO: move this to a re-usable place?
+# TODO: we might not need this... delete if so
+# TODO: although we might want a "flatten" transformer.
+# :nocov:
 module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
@@ -29,8 +32,8 @@ module Foobara
             elsif from_type.extends_symbol?(:attributes)
               declaration_data = Util.deep_dup(from_type.declaration_data)
 
-              declaration_data[:element_type_declarations] = from_type.element_types.transform_values do |element_type|
-                type_declaration(element_type)
+              declaration_data[:element_type_declarations] = from_type.element_types.transform_values do |t|
+                type_declaration(t)
               end
 
               declaration_data
@@ -53,3 +56,4 @@ module Foobara
     end
   end
 end
+# :nocov:
