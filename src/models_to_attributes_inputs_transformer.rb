@@ -14,9 +14,7 @@ module Foobara
               from_type.target_class.attributes_type
             elsif from_type.extends_symbol?(:tuple)
               # TODO: implement this logic for tuple
-              # :nocov:
               raise "Tuple not yet supported"
-              # :nocov:
             elsif from_type.extends_symbol?(:array)
               element_type = from_type.element_type
 
@@ -39,9 +37,7 @@ module Foobara
               declaration_data
             elsif from_type.extends_symbol?(:associative_array)
               # TODO: implement this
-              # :nocov:
               raise "Associative array not yet supported"
-              # :nocov:
             else
               from_type
             end
