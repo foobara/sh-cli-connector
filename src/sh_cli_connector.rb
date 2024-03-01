@@ -7,7 +7,7 @@ module Foobara
         self.program_name = program_name
         super(*, **opts, &)
 
-        add_default_inputs_transformer
+        add_default_inputs_transformer ModelsToAttributesInputsTransformer
       end
 
       # TODO: this needs a better name... it's doing more than building.
