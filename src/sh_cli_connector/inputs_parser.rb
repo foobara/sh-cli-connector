@@ -73,7 +73,7 @@ module Foobara
           if attribute_type.extends_symbol?(:model) && !attribute_type.extends_symbol?(:entity)
             attribute_to_option(
               attribute_name,
-              attribute_type: attribute_type.element_types,
+              attribute_type: attribute_type.target_class.attributes_type,
               prefix:,
               is_required:,
               default:
