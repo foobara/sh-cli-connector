@@ -6,6 +6,8 @@ module Foobara
       def initialize(*, program_name: File.basename($PROGRAM_NAME), **opts, &)
         self.program_name = program_name
         super(*, **opts, &)
+
+        #        add_default_inputs_transformer ModelsToAttributesInputsTransformer
       end
 
       # TODO: this needs a better name... it's doing more than building.
