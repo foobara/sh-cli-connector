@@ -48,7 +48,7 @@ module Foobara
           @option_set = nil
 
           parser.raise_unknown = false
-          parser.set_summary_indent "  "
+          parser.set_summary_indent " "
 
           if inputs_type.element_types.any?
             attribute_to_option

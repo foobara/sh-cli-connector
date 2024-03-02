@@ -99,7 +99,7 @@ module Foobara
 
         def setup_parser
           parser.raise_unknown = false
-          parser.set_summary_indent "  "
+          parser.set_summary_indent " "
         end
       end
     end
