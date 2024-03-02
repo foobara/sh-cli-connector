@@ -16,8 +16,18 @@ module Foobara
             long_option_paths = options.map(&:full_path)
             short_options_used = Set.new
 
+            max_width = 30
+
             options.each do |option|
-              parser.on(*option.to_args(short_options_used, long_option_paths)) do |value|
+              args = option.to_args(short_options_used, long_option_paths)
+
+              width = args.first.size
+
+              if width > max_width
+                max_width = width
+              end
+
+              parser.on(*args) do |value|
                 if value.nil? && option.boolean?
                   value = true
                 end
@@ -38,6 +48,8 @@ module Foobara
                                               end
               end
             end
+
+            parser.set_summary_width(max_width + 2)
           end
         end
       end
