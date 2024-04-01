@@ -70,7 +70,7 @@ module Foobara
           default: nil,
           prefix: []
         )
-          if attribute_type.extends_symbol?(:model) && !attribute_type.extends_symbol?(:entity)
+          if attribute_type.extends?(:model) && !attribute_type.extends?(:entity)
             attribute_to_option(
               attribute_name,
               attribute_type: attribute_type.target_class.attributes_type,
@@ -78,7 +78,7 @@ module Foobara
               is_required:,
               default:
             )
-          elsif attribute_type.extends_symbol?(:attributes)
+          elsif attribute_type.extends?(:attributes)
             sub_required_attributes = if is_required
                                         attribute_type.declaration_data[:required] || []
                                       end || []

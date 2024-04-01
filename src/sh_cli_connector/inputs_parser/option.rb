@@ -74,11 +74,11 @@ module Foobara
           end
 
           def boolean?
-            attribute_type.extends_symbol?(:boolean)
+            attribute_type.extends?(:boolean)
           end
 
           def array?
-            attribute_type.extends_symbol?(:array)
+            attribute_type.extends?(:array)
           end
 
           def description
