@@ -8,14 +8,14 @@ module Foobara
       class ModelsToAttributesInputsTransformer < TypeDeclarations::TypedTransformer
         class << self
           def type_declaration(from_type)
-            if from_type.extends?(:entity)
+            if from_type.extends?(BuiltinTypes[:entity])
               from_type.target_class.primary_key_type
-            elsif from_type.extends?(:model)
+            elsif from_type.extends?(BuiltinTypes[:model])
               from_type.target_class.attributes_type
-            elsif from_type.extends?(:tuple)
+            elsif from_type.extends?(BuiltinTypes[:tuple])
               # TODO: implement this logic for tuple
               raise "Tuple not yet supported"
-            elsif from_type.extends?(:array)
+            elsif from_type.extends?(BuiltinTypes[:array])
               element_type = from_type.element_type
 
               if element_type
@@ -27,7 +27,7 @@ module Foobara
               else
                 from_type
               end
-            elsif from_type.extends?(:attributes)
+            elsif from_type.extends?(BuiltinTypes[:attributes])
               declaration_data = Util.deep_dup(from_type.declaration_data)
 
               declaration_data[:element_type_declarations] = from_type.element_types.transform_values do |t|
@@ -35,7 +35,7 @@ module Foobara
               end
 
               declaration_data
-            elsif from_type.extends?(:associative_array)
+            elsif from_type.extends?(BuiltinTypes[:associative_array])
               # TODO: implement this
               raise "Associative array not yet supported"
             else
