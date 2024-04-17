@@ -35,7 +35,7 @@ module Foobara
       def request_to_response(request)
         if request.error
           case request.error
-          when ParseError, CommandConnector::NoCommandFoundError
+          when ParseError, CommandConnector::NotFoundError
             return Response.new(status: 6, body: request.error.message, request:)
           else
             # :nocov:
