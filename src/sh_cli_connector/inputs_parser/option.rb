@@ -93,6 +93,12 @@ module Foobara
               desc << "Required"
             end
 
+            one_of = attribute_type.declaration_data[:one_of]
+
+            if one_of && !one_of.empty?
+              desc << "One of: #{one_of.join(", ")}"
+            end
+
             if default
               desc << "Default: #{default.inspect}"
             end

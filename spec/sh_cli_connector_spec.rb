@@ -27,7 +27,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
           bar :symbol
           baz :required do
             foo [:integer], :required, "Deeply nested foo!", default: [1, 2, 3]
-            bar :symbol
+            bar :symbol, one_of: [:foo, :bar, :baz, :"some bar3"]
           end
         end
         some_model SomeModel, :required
@@ -221,6 +221,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         expect(response.body).to match(/-f,\s*--foo FOO\s*Default: "asdf"/)
         expect(response.body).to match(/-y,\s*--yo YO/)
         expect(response.body).to match(/-b,\s*--bar BAR\s*just some attribute named bar\. Required/)
+        expect(response.body).to include("One of: foo, bar, baz, some bar3")
       end
     end
 

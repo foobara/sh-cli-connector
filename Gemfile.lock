@@ -1,6 +1,6 @@
 GIT
   remote: foobara
-  revision: 4321c4c70abf92d4d690ae086e0b3c5df4499c9b
+  revision: 76232e8f44a65cc6267fc43f82cdd1ccfe6f7f67
   branch: main
   specs:
     foobara (0.0.1)
@@ -21,7 +21,7 @@ GIT
 
 GIT
   remote: https://github.com/foobara/util.git
-  revision: 3773dcb765bc70dea2b14cfe179ed3849d5126c2
+  revision: 7459f1000de349ca3ba56122dc66c1a81dcf6c4e
   specs:
     foobara-util (0.1.0)
 
@@ -66,7 +66,7 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     parallel (1.24.0)
-    parser (3.3.0.5)
+    parser (3.3.1.0)
       ast (~> 2.4.1)
       racc
     pry (0.14.2)
@@ -103,7 +103,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-support (3.12.1)
-    rubocop (1.63.3)
+    rubocop (1.63.4)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -114,8 +114,8 @@ GEM
       rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.31.2)
-      parser (>= 3.3.0.4)
+    rubocop-ast (1.31.3)
+      parser (>= 3.3.1.0)
     rubocop-capybara (2.20.0)
       rubocop (~> 1.41)
     rubocop-factory_bot (2.25.1)
