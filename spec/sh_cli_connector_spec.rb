@@ -374,6 +374,25 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       end
     end
 
+    context "when command has no inputs" do
+      let(:command_class) do
+        stub_class "SomeCommand", Foobara::Command do
+          description "Just some command class"
+
+          def execute
+            "simple command"
+          end
+        end
+      end
+
+      let(:argv) { %w[run SomeCommand] }
+
+      it "runs it" do
+        expect(response.status).to be(0)
+        expect(command_connector).to have_received(:exit).with(0)
+      end
+    end
+
     context "when setting --verbose" do
       let(:argv) { ["--verbose"] }
 

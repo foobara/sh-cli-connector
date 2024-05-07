@@ -50,7 +50,7 @@ module Foobara
           parser.raise_unknown = false
           parser.set_summary_indent " "
 
-          if inputs_type.element_types.any?
+          if inputs_type&.element_types&.any?
             attribute_to_option
             # This feels wrong but the parser callback needs to access our result.
             # TODO: figure out this smell and fix it
