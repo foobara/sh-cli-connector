@@ -3,9 +3,9 @@ module Foobara
     class ShCliConnector < CommandConnector
       attr_accessor :program_name
 
-      def initialize(*, program_name: File.basename($PROGRAM_NAME), **opts, &)
+      def initialize(*, program_name: File.basename($PROGRAM_NAME), **, &)
         self.program_name = program_name
-        super(*, **opts, &)
+        super(*, **, &)
 
         #        add_default_inputs_transformer ModelsToAttributesInputsTransformer
       end
