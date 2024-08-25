@@ -1,3 +1,7 @@
+## [0.0.2]
+
+* Add single command mode
+
 ## [0.0.1]
 
 * Add Apache-2.0 license, resulting in a dual-licensed project

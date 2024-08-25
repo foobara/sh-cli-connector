@@ -5,6 +5,8 @@ module Foobara
 
       class Request < CommandConnectors::Request
         attr_accessor :argv,
+                      :single_command_mode,
+                      :command,
                       :globalish_options,
                       :inputs_argv,
                       :action,
@@ -15,7 +17,8 @@ module Foobara
                       :stderr,
                       :exit
 
-        def initialize(argv, exit: true, stdout: $stdout, stderr: $stderr, stdin: $stdin)
+        def initialize(argv, command:, exit: true, stdout: $stdout, stderr: $stderr, stdin: $stdin)
+          self.command = command
           self.argv = argv
           self.exit = exit
           self.stdin = stdin
@@ -29,6 +32,10 @@ module Foobara
           end
 
           super()
+        end
+
+        def single_command_mode?
+          !!command
         end
 
         def input_serializer
@@ -86,6 +93,37 @@ module Foobara
         private
 
         def parse!
+          if single_command_mode?
+            parse_single_command!
+          else
+            parse_multi_command!
+          end
+
+          if action == "help"
+            globalish_options[:output_format] = "noop"
+          elsif action == "list"
+            globalish_options[:output_format] = "cli_tabular"
+          end
+
+          validate_parse_result!
+
+          set_serializers
+        end
+
+        def parse_single_command!
+          self.globalish_options = {}
+
+          if argv == ["--help"]
+            self.action = "help"
+          else
+            self.action = "run"
+            # TODO: needs to be the only registered command
+            self.argument = command
+            self.inputs_argv = argv
+          end
+        end
+
+        def parse_multi_command!
           if argv.empty?
             self.action = "help"
             self.globalish_options = {}
@@ -103,16 +141,6 @@ module Foobara
             self.action_options = result.parsed
             self.inputs_argv = result.remainder
           end
-
-          if action == "help"
-            globalish_options[:output_format] = "noop"
-          elsif action == "list"
-            globalish_options[:output_format] = "cli_tabular"
-          end
-
-          validate_parse_result!
-
-          set_serializers
         end
 
         def validate_parse_result!

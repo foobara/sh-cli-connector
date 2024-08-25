@@ -1,13 +1,34 @@
 module Foobara
   module CommandConnectors
-    class ShCliConnector < CommandConnector
-      attr_accessor :program_name
+    class AlreadyHasAConnectedCommand < StandardError; end
 
-      def initialize(*, program_name: File.basename($PROGRAM_NAME), **, &)
+    class ShCliConnector < CommandConnector
+      attr_accessor :program_name, :single_command_mode
+
+      def initialize(*, program_name: File.basename($PROGRAM_NAME), single_command_mode: false, **, &)
         self.program_name = program_name
+        self.single_command_mode = single_command_mode
         super(*, **, &)
 
         #        add_default_inputs_transformer ModelsToAttributesInputsTransformer
+      end
+
+      def connect(...)
+        super.tap do
+          if single_command_mode
+            if command_registry.size > 1
+              raise AlreadyHasAConnectedCommand, "Can't have more than one command in single command mode"
+            end
+          end
+        end
+      end
+
+      def build_request(*, **, &)
+        command = if single_command_mode
+                    command_registry.foobara_all_command.first
+                  end
+
+        self.class::Request.new(*, **, command:, &)
       end
 
       # TODO: this needs a better name... it's doing more than building.
