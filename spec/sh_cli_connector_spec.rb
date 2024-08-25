@@ -9,8 +9,9 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
   context "when there is a connected command" do
     let(:command_connector) do
-      described_class.new(program_name: "test-cli")
+      described_class.new(program_name: "test-cli", single_command_mode:)
     end
+    let(:single_command_mode) { false }
 
     let(:stdin) { StringIO.new }
     let(:stdout) { StringIO.new }
@@ -108,6 +109,61 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       it "runs the command" do
         expect(response.body).to eq("---\n:sum: 33\n")
         expect(command_connector).to have_received(:exit).with(0)
+      end
+
+      context "when in single command mode" do
+        let(:single_command_mode) { true }
+
+        context "when argv doesn't contain the command" do
+          let(:argv) do
+            [
+              "--foo",
+              "some foo1",
+              "--bar",
+              "1",
+              "--baz-foo",
+              "some foo2",
+              "--baz-bar",
+              "some bar2",
+              "--baz-baz-foo",
+              "10",
+              "11",
+              "12",
+              "--baz-baz-bar",
+              "some bar3",
+              "--some-model-bar",
+              "some model bar"
+            ]
+          end
+
+          it "runs the command" do
+            expect(response.body).to eq("sum: 33\n")
+            expect(command_connector).to have_received(:exit).with(0)
+          end
+        end
+
+        context "when argv is only --help" do
+          let(:argv) { ["--help"] }
+
+          it "performs the help action" do
+            expect(response.request.action).to eq("help")
+            expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS]")
+            expect(response.body).to include("Available actions:")
+            expect(response.body).to include("--stdin")
+          end
+        end
+
+        context "when connecting two commands" do
+          let(:second_command_class) do
+            stub_class "SomeOtherCommand", Foobara::Command
+          end
+
+          it "raises" do
+            expect {
+              command_connector.connect(second_command_class)
+            }.to raise_error(Foobara::CommandConnectors::AlreadyHasAConnectedCommand)
+          end
+        end
       end
 
       context "when passing arguments via stdin" do
