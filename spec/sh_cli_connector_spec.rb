@@ -147,9 +147,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
           it "performs the help action" do
             expect(response.request.action).to eq("help")
-            expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS]")
-            expect(response.body).to include("Available actions:")
-            expect(response.body).to include("--stdin")
+            expect(response.body).to include("Usage: test-cli [INPUTS]")
           end
         end
 

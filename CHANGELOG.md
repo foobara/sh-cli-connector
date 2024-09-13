@@ -1,6 +1,10 @@
+## [0.0.3]
+
+* Make use of single-command mode in Help command
+
 ## [0.0.2]
 
-* Add single command mode
+* Add single-command mode
 
 ## [0.0.1]
 

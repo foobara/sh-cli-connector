@@ -12,19 +12,32 @@ module Foobara
           def execute
             print_usage
 
-            if valid_argument?
-              if argument_is_command?
-                print_command_description
-                print_command_input_options
-              end
+            if single_command_mode?
+              print_command_description
+              print_command_input_options
             else
-              print_available_actions
-              print_available_commands
+              if valid_argument?
+                if argument_is_command?
+                  print_command_description
+                  print_command_input_options
+                end
+              else
+                print_available_actions
+                print_available_commands
+              end
+
+              print_global_options
             end
 
-            print_global_options
-
             output_string
+          end
+
+          def single_command_mode?
+            command_connector.single_command_mode
+          end
+
+          def command_connector
+            request.command_connector
           end
 
           def print_usage
@@ -48,7 +61,13 @@ module Foobara
           end
 
           def print_usage_without_argument
-            output.puts "Usage: #{program_name} [GLOBAL_OPTIONS] [ACTION] [COMMAND_OR_TYPE] [COMMAND_INPUTS]"
+            usage = if single_command_mode?
+                      "[INPUTS]"
+                    else
+                      "[GLOBAL_OPTIONS] [ACTION] [COMMAND_OR_TYPE] [COMMAND_INPUTS]"
+                    end
+
+            output.puts "Usage: #{program_name} #{usage}"
           end
 
           def print_usage_for_argument
@@ -78,10 +97,6 @@ module Foobara
             command_connector.program_name
           end
 
-          def command_connector
-            request.command_connector
-          end
-
           def command_registry
             command_connector.command_registry
           end
@@ -101,7 +116,11 @@ module Foobara
           def command_class
             return @command_class if defined?(@command_class)
 
-            @command_class = argument && command_registry.transformed_command_from_name(argument)
+            @command_class = if single_command_mode?
+                               command_registry.all_transformed_command_classes.first
+                             else
+                               argument && command_registry.transformed_command_from_name(argument)
+                             end
           end
 
           def argument_is_action?
@@ -156,7 +175,7 @@ module Foobara
 
           def print_command_input_options
             output.puts
-            output.puts "Command inputs:"
+            output.puts single_command_mode? ? "Inputs:" : "Command inputs:"
             output.puts
             output.puts request.inputs_parser_for(command_class).parser.summarize
           end
