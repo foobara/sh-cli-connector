@@ -70,41 +70,23 @@ module Foobara
           default: nil,
           prefix: []
         )
-          if attribute_type.extends?(BuiltinTypes[:model]) && !attribute_type.extends?(BuiltinTypes[:entity])
-            attribute_to_option(
-              attribute_name,
-              attribute_type: attribute_type.target_class.attributes_type,
-              prefix:,
-              is_required:,
-              default:
-            )
-          elsif attribute_type.extends?(BuiltinTypes[:attributes])
-            sub_required_attributes = if is_required
-                                        attribute_type.declaration_data[:required] || []
-                                      end || []
+          options = InputsParser::Option.attribute_to_options(
+            attribute_name,
+            attribute_type:,
+            prefix:,
+            is_required:,
+            default:
+          )
 
-            defaults = attribute_type.declaration_data[:defaults] || {}
-
-            attribute_type.element_types.each_pair do |sub_attribute_name, sub_attribute_type|
-              attribute_to_option(
-                sub_attribute_name,
-                attribute_type: sub_attribute_type,
-                prefix: [*prefix, *attribute_name],
-                is_required: is_required && sub_required_attributes.include?(sub_attribute_name),
-                default: defaults[sub_attribute_name]
-              )
+          if options.is_a?(::Array)
+            options.each do |option|
+              option_set << option
             end
           else
-            option = InputsParser::Option.new(
-              attribute_name:,
-              attribute_type:,
-              prefix:,
-              is_required:,
-              default:
-            )
-
-            option_set << option
-
+            # Unreachable but would be reachable if we didn't require inputs to be attributes
+            # :nocov:
+            option_set << options
+            # :nocov:
           end
         end
       end

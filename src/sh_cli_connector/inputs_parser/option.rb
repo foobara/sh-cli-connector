@@ -3,6 +3,24 @@ module Foobara
     class ShCliConnector < CommandConnector
       class InputsParser
         class Option
+          class << self
+            def attribute_to_options(attribute_name, attribute_type:, prefix:, is_required:, default:)
+              [Model, Attributes, Flag].each do |klass|
+                if klass.applicable?(attribute_type)
+                  return klass.attribute_to_options(
+                    attribute_name,
+                    attribute_type:,
+                    prefix:,
+                    is_required:,
+                    default:
+                  )
+                end
+              end
+
+              new(attribute_name:, attribute_type:, prefix:, is_required:, default:)
+            end
+          end
+
           attr_accessor :attribute_type, :attribute_name, :is_required, :prefix, :default
 
           def initialize(attribute_name:, attribute_type:, prefix:, is_required:, default:)
@@ -44,25 +62,49 @@ module Foobara
           end
 
           def to_args(short_options_used, full_paths)
-            path = _non_colliding_path(full_paths)
-            prefixed_name = path.join("_")
-            long_option_name = Util.kebab_case(prefixed_name)
-            short_option = attribute_name[0]
+            prefixed_name = _prefixed_name(full_paths)
+            long_option_name = _long_option_name(prefixed_name)
 
-            argument_text = Util.constantify(prefixed_name)
-            argument_text = "[#{argument_text}]" if boolean?
+            argument_text = _argument_text(prefixed_name)
 
-            args = ["--#{long_option_name} #{argument_text}"]
+            args = if argument_text
+                     ["--#{long_option_name} #{argument_text}"]
+                   else
+                     ["--#{long_option_name}"]
+                   end
 
-            # TODO: we should prioritize required options to get the short name in case of collision?
-            unless short_options_used.include?(short_option)
-              short_options_used << short_option
-              args << "-#{short_option} #{argument_text}"
+            if supports_short_option?
+              short_option = attribute_name[0]
+              # TODO: we should prioritize required options to get the short name in case of collision?
+              unless short_options_used.include?(short_option)
+                short_options_used << short_option
+                args << if argument_text
+                          "-#{short_option} #{argument_text}"
+                        else
+                          "-#{short_option}"
+                        end
+              end
             end
 
             args << description if description
 
             args
+          end
+
+          def supports_short_option?
+            true
+          end
+
+          def _prefixed_name(full_paths)
+            _non_colliding_path(full_paths).join("_")
+          end
+
+          def _long_option_name(prefixed_name)
+            Util.kebab_case(prefixed_name)
+          end
+
+          def _argument_text(prefixed_name)
+            Util.constantify(prefixed_name)
           end
 
           def full_path
@@ -73,12 +115,12 @@ module Foobara
             is_required
           end
 
-          def boolean?
-            attribute_type.extends?(BuiltinTypes[:boolean])
-          end
-
           def array?
             attribute_type.extends?(BuiltinTypes[:array])
+          end
+
+          def has_default?
+            !default.nil?
           end
 
           def description
@@ -99,7 +141,7 @@ module Foobara
               desc << "One of: #{one_of.join(", ")}"
             end
 
-            if default
+            if has_default?
               desc << "Default: #{default.inspect}"
             end
 

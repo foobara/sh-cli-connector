@@ -1,3 +1,7 @@
+## [0.0.4] - 2024-10-07
+
+* Introduce --no- options to negate boolean flags
+
 ## [0.0.3]
 
 * Make use of single-command mode in Help command
