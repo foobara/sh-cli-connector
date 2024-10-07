@@ -247,8 +247,39 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
         let(:argv) { ["SomeCommand", "-f"] }
 
-        it "defaults it to true when not giving a value" do
+        it "is true" do
           expect(response.command.inputs[:flag]).to be(true)
+        end
+
+        context "with a default" do
+          let(:inputs_proc) do
+            proc do
+              baz :string
+              flag :boolean, default: true
+            end
+          end
+
+          context "when setting" do
+            it "doesn't have a flag for the default" do
+              expect(response.error.message).to eq("Unexpected argument: -f")
+            end
+          end
+
+          context "when unsetting" do
+            let(:argv) { ["SomeCommand", "--no-flag"] }
+
+            it "is false as normal" do
+              expect(response.command.inputs[:flag]).to be(false)
+            end
+          end
+        end
+
+        context "when turning flag off" do
+          let(:argv) { ["SomeCommand", "--no-flag"] }
+
+          it "is false when using --no- form" do
+            expect(response.command.inputs[:flag]).to be(false)
+          end
         end
       end
     end

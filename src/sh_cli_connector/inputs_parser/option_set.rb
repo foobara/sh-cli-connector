@@ -28,10 +28,6 @@ module Foobara
               end
 
               parser.on(*args) do |value|
-                if value.nil? && option.boolean?
-                  value = true
-                end
-
                 h = result_source.result.parsed
 
                 option.prefix.each do |key|
