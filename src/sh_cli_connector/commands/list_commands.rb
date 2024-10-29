@@ -2,7 +2,7 @@ module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
       module Commands
-        class ListCommands < CommandConnectors::Commands::ListCommands
+        class ListCommands < CommandConnector::Commands::ListCommands
           def verbose?
             request.globalish_options[:verbose]
           end

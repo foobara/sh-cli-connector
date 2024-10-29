@@ -3,7 +3,7 @@ module Foobara
     class ShCliConnector < CommandConnector
       class ParseError < StandardError; end
 
-      class Request < CommandConnectors::Request
+      class Request < CommandConnector::Request
         attr_accessor :argv,
                       :single_command_mode,
                       :command,
