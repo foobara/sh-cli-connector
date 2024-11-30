@@ -40,6 +40,10 @@ module Foobara
               end
 
               lines.each do |line|
+                if indent > 0
+                  line = (" " * indent) + line
+                end
+
                 io.puts line.rstrip
               end
             end
@@ -106,6 +110,17 @@ module Foobara
                       end
               width || IO.console_size[1]
             end
+          end
+
+          def indent
+            @indent ||= if declaration_data.is_a?(::Hash)
+                          declaration_data[:indent]
+                        elsif declaration_data.respond_to?(:indent)
+                          # TODO: test this
+                          # :nocov:
+                          declaration_data.indent
+                          # :nocov:
+                        end || 0
           end
 
           def min_final_column_width

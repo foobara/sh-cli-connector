@@ -49,5 +49,15 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliTabul
         )
       end
     end
+
+    context "when using indentation" do
+      let(:serializer) { described_class.new(terminal_width:, indent: 2) }
+
+      it "serializes the table" do
+        expect(result).to eq(
+          "  foof- barb- bazbaz\n  oo    ar\n"
+        )
+      end
+    end
   end
 end
