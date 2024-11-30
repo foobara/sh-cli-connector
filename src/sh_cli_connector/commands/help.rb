@@ -152,9 +152,14 @@ module Foobara
             output.puts
             output.puts "Available commands:"
             output.puts
-            command_registry.each_transformed_command_class do |command_class|
-              output.puts "  #{command_class.full_command_name}"
+
+            table = command_registry.all_transformed_command_classes.map do |command_class|
+              ["  #{command_class.full_command_name}", command_class.description]
             end
+
+            serializer = Serializers::CliTabularSerializer.new
+
+            output.puts serializer.serialize(table)
           end
 
           def print_global_options

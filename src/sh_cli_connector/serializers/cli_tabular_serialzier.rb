@@ -48,8 +48,6 @@ module Foobara
           end
 
           def column_widths(table)
-            widths = []
-
             max_row_length = table.map(&:size).max
 
             widths = [0] * max_row_length

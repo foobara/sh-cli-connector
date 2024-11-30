@@ -1,3 +1,7 @@
+## [0.0.7] - 2024-11-30
+
+* Add descriptions to available commands
+
 ## [0.0.6] - 2024-10-28
 
 * Handle CommandConnector namespace change
