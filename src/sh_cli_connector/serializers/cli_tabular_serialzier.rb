@@ -108,7 +108,8 @@ module Foobara
                         config.terminal_width
                         # :nocov:
                       end
-              width || IO.console_size[1]
+
+              (width || IO.console_size[1]) - indent
             end
           end
 
