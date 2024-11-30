@@ -1,6 +1,7 @@
-## [0.0.7] - 2024-11-30
+## [0.0.8] - 2024-11-30
 
 * Add descriptions to available commands
+* Add support for indent: option
 
 ## [0.0.6] - 2024-10-28
 

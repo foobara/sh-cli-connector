@@ -157,7 +157,7 @@ module Foobara
               ["  #{command_class.full_command_name}", command_class.description]
             end
 
-            serializer = Serializers::CliTabularSerializer.new
+            serializer = Serializers::CliTabularSerializer.new(indent: 2)
 
             output.puts serializer.serialize(table)
           end
