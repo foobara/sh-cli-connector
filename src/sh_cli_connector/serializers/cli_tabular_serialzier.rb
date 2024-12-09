@@ -9,6 +9,8 @@ module Foobara
           PAD_SIZE = 1
 
           def serialize(table)
+            return "" if table.empty?
+
             io = StringIO.new
 
             widths = column_widths(table)
