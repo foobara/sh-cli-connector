@@ -1,3 +1,7 @@
+## [0.0.11] - 2025-01-07
+
+- Bump Ruby to 3.4.1
+
 ## [0.0.10] - 2024-12-09
 
 - Do not explode when serializing an empty table
