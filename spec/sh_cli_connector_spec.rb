@@ -60,8 +60,12 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
     let(:response) { command_connector.run(argv, stdin:, stdout:, stderr:) }
 
-    before do
+    def connect_command
       command_connector.connect(command_class)
+    end
+
+    before do
+      connect_command
       allow(command_connector).to receive(:exit)
     end
 
@@ -139,6 +143,28 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
           it "runs the command" do
             expect(response.body).to eq("sum: 33\n")
             expect(command_connector).to have_received(:exit).with(0)
+          end
+
+          context "when passing a command to single_command_mode instead of true:" do
+            let(:single_command_mode) { command_class }
+
+            def connect_command
+              # nothing to do here, connection happens automatically
+            end
+
+            it "connects the command automatically" do
+              expect(response.body).to eq("sum: 33\n")
+              expect(command_connector).to have_received(:exit).with(0)
+            end
+
+            context "when passing the command as an array of connect args" do
+              let(:single_command_mode) { [command_class] }
+
+              it "connects the command automatically" do
+                expect(response.body).to eq("sum: 33\n")
+                expect(command_connector).to have_received(:exit).with(0)
+              end
+            end
           end
         end
 

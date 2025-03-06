@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    foobara-sh-cli-connector (0.0.11)
+    foobara-sh-cli-connector (0.0.12)
       foobara
 
 GEM

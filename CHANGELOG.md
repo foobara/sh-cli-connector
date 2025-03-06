@@ -1,3 +1,7 @@
+## [0.0.12] - 2025-03-06
+
+- Allow passing a command or connect args to single_command_mode:
+
 ## [0.0.11] - 2025-01-07
 
 - Bump Ruby to 3.4.1

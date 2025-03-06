@@ -144,9 +144,9 @@ module Foobara
         end
 
         def validate_parse_result!
-          if action == "help" || action == "list"
+          if %w[help list].include?(action)
             # This gives some leniency around where the global options are when there's no command
-            result  = globalish_parser.parse(inputs_argv)
+            result = globalish_parser.parse(inputs_argv)
 
             if result.remainder.any?
               # :nocov:
