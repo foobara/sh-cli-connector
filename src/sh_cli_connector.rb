@@ -7,10 +7,22 @@ module Foobara
 
       def initialize(*, program_name: File.basename($PROGRAM_NAME), single_command_mode: false, **, &)
         self.program_name = program_name
-        self.single_command_mode = single_command_mode
+
+        connect_args = if single_command_mode
+                         self.single_command_mode = true
+
+                         if single_command_mode.is_a?(::Array)
+                           single_command_mode
+                         elsif single_command_mode.is_a?(::Class) && single_command_mode < Foobara::Command
+                           [single_command_mode]
+                         end
+                       end
+
         super(*, **, &)
 
-        #        add_default_inputs_transformer ModelsToAttributesInputsTransformer
+        if connect_args
+          connect(*connect_args)
+        end
       end
 
       def connect(...)
