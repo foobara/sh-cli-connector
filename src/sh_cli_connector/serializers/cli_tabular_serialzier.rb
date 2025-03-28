@@ -172,8 +172,8 @@ module Foobara
 
                     parts_size = parts.size
 
-                    parts.each.with_index do |rows_worth, index|
-                      rows_worth << "-" unless index == parts_size - 1
+                    parts.each.with_index do |rows_worth, inner_index|
+                      rows_worth << "-" unless inner_index == parts_size - 1
                       cell << rows_worth
                     end
                   else

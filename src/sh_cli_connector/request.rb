@@ -120,6 +120,7 @@ module Foobara
             # TODO: needs to be the only registered command
             self.argument = command
             self.inputs_argv = argv
+            self.command_class = command.command_class
           end
         end
 

@@ -1,25 +1,35 @@
 PATH
   remote: .
   specs:
-    foobara-sh-cli-connector (0.0.12)
-      foobara
+    foobara-sh-cli-connector (0.0.13)
+      foobara (~> 0.0.88)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    ast (2.4.2)
+    ast (2.4.3)
     bigdecimal (3.1.9)
-    byebug (11.1.3)
+    byebug (12.0.0)
     coderay (1.1.3)
-    diff-lcs (1.6.0)
+    diff-lcs (1.6.1)
     docile (1.4.1)
+    ffi (1.17.1)
+    ffi (1.17.1-aarch64-linux-gnu)
+    ffi (1.17.1-aarch64-linux-musl)
+    ffi (1.17.1-arm-linux-gnu)
+    ffi (1.17.1-arm-linux-musl)
+    ffi (1.17.1-arm64-darwin)
+    ffi (1.17.1-x86-linux-gnu)
+    ffi (1.17.1-x86-linux-musl)
+    ffi (1.17.1-x86_64-darwin)
     ffi (1.17.1-x86_64-linux-gnu)
-    foobara (0.0.69)
+    ffi (1.17.1-x86_64-linux-musl)
+    foobara (0.0.88)
       bigdecimal
-      foobara-lru-cache
-      foobara-util
+      foobara-lru-cache (~> 0.0.2)
+      foobara-util (~> 0.0.11)
     foobara-lru-cache (0.0.2)
-    foobara-rubocop-rules (0.0.7)
+    foobara-rubocop-rules (0.0.8)
       rubocop
       rubocop-rspec
     foobara-spec-helpers (0.0.4)
@@ -42,13 +52,13 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
-    json (2.10.1)
+    json (2.10.2)
     language_server-protocol (3.17.0.4)
     lint_roller (1.1.0)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    logger (1.6.6)
+    logger (1.7.0)
     lumberjack (1.2.10)
     method_source (1.1.0)
     nenv (0.3.0)
@@ -57,15 +67,16 @@ GEM
       shellany (~> 0.0)
     ostruct (0.6.1)
     parallel (1.26.3)
-    parser (3.3.7.1)
+    parser (3.3.7.3)
       ast (~> 2.4.1)
       racc
-    pry (0.14.2)
+    prism (1.4.0)
+    pry (0.15.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    pry-byebug (3.10.1)
-      byebug (~> 11.0)
-      pry (>= 0.13, < 0.15)
+    pry-byebug (3.11.0)
+      byebug (~> 12.0)
+      pry (>= 0.13, < 0.16)
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.2.1)
@@ -89,7 +100,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.2)
-    rubocop (1.73.2)
+    rubocop (1.75.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -97,11 +108,12 @@ GEM
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.38.0, < 2.0)
+      rubocop-ast (>= 1.43.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.38.1)
-      parser (>= 3.3.1.0)
+    rubocop-ast (1.43.0)
+      parser (>= 3.3.7.2)
+      prism (~> 1.4)
     rubocop-rake (0.7.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1)
@@ -122,12 +134,22 @@ GEM
     unicode-emoji (4.0.4)
 
 PLATFORMS
-  x86_64-linux
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm-linux-gnu
+  arm-linux-musl
+  arm64-darwin
+  ruby
+  x86-linux-gnu
+  x86-linux-musl
+  x86_64-darwin
+  x86_64-linux-gnu
+  x86_64-linux-musl
 
 DEPENDENCIES
-  foobara-rubocop-rules
+  foobara-rubocop-rules (~> 0.0.1)
   foobara-sh-cli-connector!
-  foobara-spec-helpers
+  foobara-spec-helpers (~> 0.0.1)
   guard-rspec
   pry
   pry-byebug
@@ -139,7 +161,7 @@ DEPENDENCIES
   simplecov
 
 RUBY VERSION
-   ruby 3.4.1p0
+   ruby 3.4.2p28
 
 BUNDLED WITH
-   2.4.14
+   2.6.6

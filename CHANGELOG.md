@@ -1,3 +1,7 @@
+## [0.0.13] - 2025-03-28
+
+- Handle recent #request_to_response refactor
+
 ## [0.0.12] - 2025-03-06
 
 - Allow passing a command or connect args to single_command_mode:

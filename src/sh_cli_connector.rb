@@ -65,48 +65,54 @@ module Foobara
         nil
       end
 
-      def request_to_response(request)
-        if request.error
-          case request.error
-          when ParseError, CommandConnector::NotFoundError
-            return Response.new(status: 6, body: request.error.message, request:)
-          else
-            # :nocov:
-            raise "Not sure how to handle error: #{request.error}"
-            # :nocov:
-          end
-        end
+      def set_response_status(response)
+        request = response.request
 
-        body = request.response_body
+        response.status = if request.error
+                            6
+                          elsif request.success?
+                            0
+                          else
+                            errors = request.error_collection.error_array
+                            error = errors.first
 
-        status = if request.success?
-                   0
-                 else
-                   errors = request.error_collection.error_array
-                   error = errors.first
+                            case error
+                            when CommandConnector::NotFoundError, Foobara::Entity::NotFoundError
+                              # TODO: we should not be coupled to Entities here...
+                              # :nocov:
+                              2
+                              # :nocov:
+                            when CommandConnector::UnauthenticatedError
+                              # :nocov:
+                              3
+                              # :nocov:
+                            when CommandConnector::NotAllowedError
+                              # :nocov:
+                              4
+                              # :nocov:
+                            when CommandConnector::UnknownError
+                              # :nocov:
+                              5
+                              # :nocov:
+                            end || 1
+                          end
+      end
 
-                   case error
-                   when CommandConnector::NotFoundError, Foobara::Entity::NotFoundError
-                     # TODO: we should not be coupled to Entities here...
-                     # :nocov:
-                     2
-                   # :nocov:
-                   when CommandConnector::UnauthenticatedError
-                     # :nocov:
-                     3
-                   # :nocov:
-                   when CommandConnector::NotAllowedError
-                     # :nocov:
-                     4
-                   # :nocov:
-                   when CommandConnector::UnknownError
-                     # :nocov:
-                     5
-                     # :nocov:
-                   end || 1
-                 end
+      def set_response_body(response)
+        request = response.request
 
-        Response.new(status:, body:, request:)
+        response.body = if request.error
+                          case request.error
+                          when ParseError, CommandConnector::NotFoundError
+                            request.error.message
+                          else
+                            # :nocov:
+                            raise "Not sure how to handle error: #{request.error}"
+                            # :nocov:
+                          end
+                        else
+                          request.response_body
+                        end
       end
     end
   end
