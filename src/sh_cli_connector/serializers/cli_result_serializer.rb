@@ -3,9 +3,9 @@ module Foobara
     class ShCliConnector < CommandConnector
       module Serializers
         # Should allow either atomic or aggregate
-        class CliResultSerializer < CommandConnectors::Serializers::AtomicSerializer
+        class CliResultSerializer < CommandConnectors::Serializers::SuccessSerializer
           def serialize(object)
-            serializable = super
+            serializable = atomic_serializer.serialize(object)
 
             if serializable.is_a?(::String)
               serializable
@@ -17,6 +17,10 @@ module Foobara
 
               io.string
             end
+          end
+
+          def atomic_serializer
+            @atomic_serializer ||= Foobara::CommandConnectors::Serializers::AtomicSerializer.new
           end
 
           private

@@ -1,3 +1,7 @@
+## [0.0.14] - 2025-04-11
+
+- Handle newer versions of foobara
+
 ## [0.0.13] - 2025-03-28
 
 - Handle recent #request_to_response refactor

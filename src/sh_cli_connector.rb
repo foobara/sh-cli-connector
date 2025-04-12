@@ -40,7 +40,7 @@ module Foobara
                     command_registry.foobara_all_command.first
                   end
 
-        self.class::Request.new(*, **, command:, &)
+        super(*, **, command:, &)
       end
 
       # TODO: this needs a better name... it's doing more than building.
