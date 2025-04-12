@@ -1,3 +1,7 @@
+## [0.0.15] - 2025-04-12
+
+- Default run args to ARGV
+
 ## [0.0.14] - 2025-04-11
 
 - Handle newer versions of foobara

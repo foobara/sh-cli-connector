@@ -25,6 +25,10 @@ module Foobara
         end
       end
 
+      def run(argv = ARGV, *, **, &)
+        super
+      end
+
       def connect(...)
         super.tap do
           if single_command_mode
