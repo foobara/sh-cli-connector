@@ -18,10 +18,11 @@ module Foobara
           end
         end
 
-        attr_accessor :inputs_type, :parser, :current_array, :result
+        attr_accessor :inputs_type, :parser, :current_array, :result, :always_prefix_inputs
 
-        def initialize(inputs_type)
+        def initialize(inputs_type, always_prefix_inputs:)
           self.inputs_type = inputs_type
+          self.always_prefix_inputs = always_prefix_inputs
           self.parser = OptionParser.new
 
           setup_parser
@@ -53,7 +54,7 @@ module Foobara
           parser.set_summary_indent " "
 
           if inputs_type&.element_types&.any?
-            attribute_to_option
+            attribute_to_option(always_prefix_inputs:)
             # This feels wrong but the parser callback needs to access our result.
             # TODO: figure out this smell and fix it
             option_set.prepare_parser(self)
@@ -61,12 +62,12 @@ module Foobara
         end
 
         def option_set
-          # TODO: this feels wrong to pass self here...
           @option_set ||= OptionSet.new
         end
 
         def attribute_to_option(
           attribute_name = nil,
+          always_prefix_inputs:,
           attribute_type: inputs_type,
           is_required: true,
           default: nil,
@@ -77,7 +78,8 @@ module Foobara
             attribute_type:,
             prefix:,
             is_required:,
-            default:
+            default:,
+            always_prefix_inputs:
           )
 
           if options.is_a?(::Array)

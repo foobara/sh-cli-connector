@@ -9,13 +9,21 @@ module Foobara
                 attribute_type.extends?(BuiltinTypes[:model]) && !attribute_type.extends?(BuiltinTypes[:entity])
               end
 
-              def attribute_to_options(attribute_name, attribute_type:, prefix:, is_required:, default:)
+              def attribute_to_options(
+                attribute_name,
+                attribute_type:,
+                prefix:,
+                is_required:,
+                default:,
+                always_prefix_inputs:
+              )
                 Option.attribute_to_options(
                   attribute_name,
                   attribute_type: attribute_type.target_class.attributes_type,
                   prefix:,
                   is_required:,
-                  default:
+                  default:,
+                  always_prefix_inputs:
                 )
               end
             end

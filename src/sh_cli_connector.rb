@@ -3,10 +3,18 @@ module Foobara
     class AlreadyHasAConnectedCommand < StandardError; end
 
     class ShCliConnector < CommandConnector
-      attr_accessor :program_name, :single_command_mode
+      attr_accessor :program_name, :single_command_mode, :always_prefix_inputs
 
-      def initialize(*, program_name: File.basename($PROGRAM_NAME), single_command_mode: false, **, &)
+      def initialize(
+        *,
+        program_name: File.basename($PROGRAM_NAME),
+        single_command_mode: false,
+        always_prefix_inputs: false,
+        **,
+        &
+      )
         self.program_name = program_name
+        self.always_prefix_inputs = always_prefix_inputs
 
         connect_args = if single_command_mode
                          self.single_command_mode = true

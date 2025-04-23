@@ -79,7 +79,7 @@ module Foobara
         end
 
         def inputs_parser_for(command_class = self.command_class)
-          InputsParser.new(command_class.inputs_type)
+          InputsParser.new(command_class.inputs_type, always_prefix_inputs: command_connector.always_prefix_inputs)
         end
 
         def globalish_parser

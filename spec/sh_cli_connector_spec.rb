@@ -9,9 +9,10 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
   context "when there is a connected command" do
     let(:command_connector) do
-      described_class.new(program_name: "test-cli", single_command_mode:)
+      described_class.new(program_name: "test-cli", single_command_mode:, always_prefix_inputs:)
     end
     let(:single_command_mode) { false }
+    let(:always_prefix_inputs) { false }
 
     let(:stdin) { StringIO.new }
     let(:stdout) { StringIO.new }
@@ -333,6 +334,20 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         expect(response.body).to match(/-y,\s*--yo YO/)
         expect(response.body).to match(/-b,\s*--bar BAR\s*just some attribute named bar\. Required/)
         expect(response.body).to include("One of: foo, bar, baz, some bar3")
+      end
+
+      context "when always including prefixes" do
+        let(:always_prefix_inputs) { true }
+
+        it "gives help text for the command with all inputs including prefixes" do
+          expect(response.status).to be(0)
+          expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] SomeCommand")
+          expect(response.body).to include("Just some command class")
+          expect(response.body).to match(/-f,\s*--foo FOO\s*Default: "asdf"/)
+          expect(response.body).to match(/-y,\s*--some-model-yo SOME_MODEL_YO/)
+          expect(response.body).to match(/-b,\s*--bar BAR\s*just some attribute named bar\. Required/)
+          expect(response.body).to include("One of: foo, bar, baz, some bar3")
+        end
       end
     end
 

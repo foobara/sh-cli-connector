@@ -9,7 +9,14 @@ module Foobara
                 attribute_type.extends?(BuiltinTypes[:attributes])
               end
 
-              def attribute_to_options(attribute_name, attribute_type:, prefix:, is_required:, default:)
+              def attribute_to_options(
+                attribute_name,
+                attribute_type:,
+                prefix:,
+                is_required:,
+                default:,
+                always_prefix_inputs:
+              )
                 sub_required_attributes = if is_required
                                             attribute_type.declaration_data[:required] || []
                                           end || []
@@ -22,7 +29,8 @@ module Foobara
                     attribute_type: sub_attribute_type,
                     prefix: [*prefix, *attribute_name],
                     is_required: is_required && sub_required_attributes.include?(sub_attribute_name),
-                    default: defaults[sub_attribute_name]
+                    default: defaults[sub_attribute_name],
+                    always_prefix_inputs:
                   )
                 end.flatten
               end

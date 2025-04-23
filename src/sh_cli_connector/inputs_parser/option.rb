@@ -4,7 +4,14 @@ module Foobara
       class InputsParser
         class Option
           class << self
-            def attribute_to_options(attribute_name, attribute_type:, prefix:, is_required:, default:)
+            def attribute_to_options(
+              attribute_name,
+              attribute_type:,
+              prefix:,
+              is_required:,
+              default:,
+              always_prefix_inputs:
+            )
               [Model, Attributes, Flag].each do |klass|
                 if klass.applicable?(attribute_type)
                   return klass.attribute_to_options(
@@ -12,23 +19,39 @@ module Foobara
                     attribute_type:,
                     prefix:,
                     is_required:,
-                    default:
+                    default:,
+                    always_prefix_inputs:
                   )
                 end
               end
 
-              new(attribute_name:, attribute_type:, prefix:, is_required:, default:)
+              new(
+                attribute_name:,
+                attribute_type:,
+                prefix:,
+                is_required:,
+                default:,
+                always_prefix_inputs:
+              )
             end
           end
 
-          attr_accessor :attribute_type, :attribute_name, :is_required, :prefix, :default
+          attr_accessor :attribute_type, :attribute_name, :is_required, :prefix, :default, :always_prefix_inputs
 
-          def initialize(attribute_name:, attribute_type:, prefix:, is_required:, default:)
+          def initialize(
+            attribute_name:,
+            attribute_type:,
+            prefix:,
+            is_required:,
+            default:,
+            always_prefix_inputs:
+          )
             self.attribute_type = attribute_type
             self.attribute_name = attribute_name
             self.prefix = prefix
             self.is_required = is_required
             self.default = default
+            self.always_prefix_inputs = always_prefix_inputs
 
             # TODO: support this
             # args << attributes_type.declaration_data[:one_of] if attributes_type.declaration_data.key?(:one_of)
@@ -96,7 +119,11 @@ module Foobara
           end
 
           def _prefixed_name(full_paths)
-            _non_colliding_path(full_paths).join("_")
+            if always_prefix_inputs
+              full_path.join("_")
+            else
+              _non_colliding_path(full_paths).join("_")
+            end
           end
 
           def _long_option_name(prefixed_name)

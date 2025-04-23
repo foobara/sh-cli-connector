@@ -9,7 +9,14 @@ module Foobara
                 attribute_type.extends?(BuiltinTypes[:boolean])
               end
 
-              def attribute_to_options(attribute_name, attribute_type:, prefix:, is_required:, default:)
+              def attribute_to_options(
+                attribute_name,
+                attribute_type:,
+                prefix:,
+                is_required:,
+                default:,
+                always_prefix_inputs:
+              )
                 klasses = []
 
                 klasses << OnFlag if default != true
@@ -21,7 +28,8 @@ module Foobara
                     attribute_type:,
                     is_required:,
                     default:,
-                    prefix:
+                    prefix:,
+                    always_prefix_inputs:
                   )
                 else
                   klasses.map do |klass|
@@ -30,7 +38,8 @@ module Foobara
                       attribute_type:,
                       is_required:,
                       default:,
-                      prefix:
+                      prefix:,
+                      always_prefix_inputs:
                     )
                   end
                 end

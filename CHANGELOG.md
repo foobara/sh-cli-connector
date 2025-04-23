@@ -1,3 +1,7 @@
+## [0.0.16] - 2025-04-23
+
+- Give a way to force inputs to be fully prefixed even if they don't collide
+
 ## [0.0.15] - 2025-04-12
 
 - Default run args to ARGV
