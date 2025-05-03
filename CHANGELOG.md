@@ -1,3 +1,8 @@
+## [0.0.17] - 2025-05-03
+
+- Deal with recent CommandConnector interface changes
+- Make ParseError a Foobara::Error
+
 ## [0.0.16] - 2025-04-23
 
 - Give a way to force inputs to be fully prefixed even if they don't collide

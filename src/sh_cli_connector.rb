@@ -70,7 +70,21 @@ module Foobara
         response
       end
 
-      def request_to_command(request)
+      def request_to_command_class(request)
+        super
+      rescue CommandConnector::NoCommandFoundError, ParseError => e
+        request.error = e
+        nil
+      end
+
+      def request_to_command_inputs(request)
+        super
+      rescue CommandConnector::NoCommandFoundError, ParseError => e
+        request.error = e
+        nil
+      end
+
+      def request_to_command_instance(request)
         super
       rescue CommandConnector::NoCommandFoundError, ParseError => e
         request.error = e
