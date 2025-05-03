@@ -14,11 +14,11 @@ module Foobara
           def action=(action)
             if @action
               # :nocov:
-              raise ParseError, "Action already set"
+              raise ParseError.new(message: "Action already set")
               # :nocov:
             elsif argument
               # :nocov:
-              raise ParseError, "Not expecting #{action} to appear after #{argument}"
+              raise ParseError.new(message: "Not expecting #{action} to appear after #{argument}")
               # :nocov:
             else
               @action = action
@@ -28,7 +28,7 @@ module Foobara
           def argument=(argument)
             if @argument
               # :nocov:
-              raise ParseError, "Argument already set"
+              raise ParseError.new(message: "Argument already set")
               # :nocov:
             end
 
@@ -37,17 +37,18 @@ module Foobara
 
           def validate!
             if action.nil?
-              raise ParseError,
-                    "Found invalid option #{remainder.first} but was expecting an action like 'run' or 'help'"
+              raise ParseError.new(
+                message: "Found invalid option #{remainder.first} but was expecting an action like 'run' or 'help'"
+              )
             end
 
             if action == "run"
               unless argument
-                raise ParseError, "Missing command to run"
+                raise ParseError.new(message: "Missing command to run")
               end
             elsif action == "describe"
               unless argument
-                raise ParseError, "Missing command or type to describe"
+                raise ParseError.new(message: "Missing command or type to describe")
               end
             end
           end

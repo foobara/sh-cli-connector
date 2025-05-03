@@ -13,7 +13,7 @@ module Foobara
             unless remainder.empty?
               # TODO: let's invert the order for single command mode: parse inputs first, then global from remainder,
               # and then raise if there's anything left
-              raise ParseError, "Unexpected argument: #{remainder.first}"
+              raise ParseError.new(message: "Unexpected argument: #{remainder.first}")
             end
           end
         end

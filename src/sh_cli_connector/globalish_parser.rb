@@ -93,7 +93,7 @@ module Foobara
           [result.parsed[:input_format], result.parsed[:output_format]].compact.uniq.each do |format|
             if format
               unless Serializer.serializer_from_symbol(format)
-                raise ParseError, "Unknown format: #{format}"
+                raise ParseError.new(message: "Unknown format: #{format}")
               end
             end
           end

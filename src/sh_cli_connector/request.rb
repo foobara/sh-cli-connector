@@ -1,7 +1,9 @@
 module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
-      class ParseError < StandardError; end
+      class ParseError < Foobara::Error
+        context({})
+      end
 
       class Request < CommandConnector::Request
         attr_accessor :argv,
@@ -51,7 +53,7 @@ module Foobara
 
             unless serializer_class
               # :nocov:
-              raise ParseError, "Unknown input format: #{input_format}"
+              raise ParseError.new(message: "Unknown input format: #{input_format}")
               # :nocov:
             end
 
@@ -151,7 +153,7 @@ module Foobara
 
             if result.remainder.any?
               # :nocov:
-              raise ParseError, "Found invalid options #{globalish_parser.remainder}"
+              raise ParseError.new(message: "Found invalid options #{globalish_parser.remainder}")
               # :nocov:
             end
 
