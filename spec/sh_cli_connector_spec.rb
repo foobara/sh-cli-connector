@@ -54,7 +54,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         inputs(&ip)
 
         def execute
-          { sum: baz&.[](:baz)&.[](:foo)&.sum }
+          { sum: baz&.[](:baz)&.[](:foo)&.sum, today: Date.today }
         end
       end
     end
@@ -112,7 +112,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       end
 
       it "runs the command" do
-        expect(response.body).to eq("---\n:sum: 33\n")
+        expect(response.body).to match(/---\n:sum: 33\n:today: \d{4}-\d{2}-\d{2}/)
         expect(command_connector).to have_received(:exit).with(0)
       end
 
@@ -142,7 +142,8 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
           end
 
           it "runs the command" do
-            expect(response.body).to eq("sum: 33\n")
+            expect(response.body).to match(/sum: 33,\ntoday: \d{4}-\d{2}-\d{2}/)
+
             expect(command_connector).to have_received(:exit).with(0)
           end
 
@@ -154,7 +155,8 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
             end
 
             it "connects the command automatically" do
-              expect(response.body).to eq("sum: 33\n")
+              expect(response.body).to match(/sum: 33,\ntoday: \d{4}-\d{2}-\d{2}/)
+
               expect(command_connector).to have_received(:exit).with(0)
             end
 
@@ -162,7 +164,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
               let(:single_command_mode) { [command_class] }
 
               it "connects the command automatically" do
-                expect(response.body).to eq("sum: 33\n")
+                expect(response.body).to match(/sum: 33,\ntoday: \d{4}-\d{2}-\d{2}/)
                 expect(command_connector).to have_received(:exit).with(0)
               end
             end
@@ -217,7 +219,8 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         let(:format) { nil }
 
         it "runs the command" do
-          expect(response.body).to eq("---\n:sum: 33\n")
+          expect(response.body).to match(/---\n:sum: 33\n:today: \d{4}-\d{2}-\d{2}/)
+
           expect(stdout.string).to eq(response.body)
           expect(command_connector).to have_received(:exit).with(0)
         end
@@ -227,7 +230,8 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
           let(:format) { "json" }
 
           it "runs the command" do
-            expect(response.body).to eq('{"sum":33}')
+            expect(response.body).to match(/\{"sum":33,"today":"\d{4}-\d{2}-\d{2}"}/)
+
             expect(stdout.string.chomp).to eq(response.body)
             expect(command_connector).to have_received(:exit).with(0)
           end
@@ -259,7 +263,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
 
         it "works all the way down" do
           expect(response.status).to be(0)
-          expect(response.body).to eq("sum: 3\n")
+          expect(response.body).to match(/sum: 3,\ntoday: \d{4}-\d{2}-\d{2}/)
           expect(command_connector).to have_received(:exit).with(0)
         end
       end

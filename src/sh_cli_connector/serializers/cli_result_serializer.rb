@@ -77,7 +77,7 @@ module Foobara
               if padding
                 io.write "#{padding}}"
               end
-            when ::String, ::Symbol, ::Numeric, ::TrueClass, ::FalseClass, ::NilClass
+            when ::String, ::Symbol, ::Numeric, ::TrueClass, ::FalseClass, ::NilClass, ::Time
               if after_colon
                 io.write " "
               else
@@ -86,9 +86,14 @@ module Foobara
 
               io.write object.inspect
             else
-              # :nocov:
-              raise "Unsupported type: #{object.class}"
-              # :nocov:
+              if (defined?(::Date) && object.is_a?(::Date)) || (defined?(::DateTime) && object.is_a?(::DateTime))
+                io.write after_colon ? " " : padding
+                io.write object.to_s
+              else
+                # :nocov:
+                raise "Unsupported type: #{object.class}"
+                # :nocov:
+              end
             end
           end
         end

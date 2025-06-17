@@ -1,3 +1,7 @@
+## [0.0.18] - 2025-06-16
+
+- Support Time/Date/DateTime in CliResultSerializer
+
 ## [0.0.17] - 2025-05-03
 
 - Deal with recent CommandConnector interface changes
