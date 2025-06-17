@@ -129,13 +129,13 @@ module Foobara
 
           # TODO: maybe move this up the hierarchy?
           def known_actions
-            %w[
-              run
-              describe
-              manifest
-              ping
-              query_git_commit_info
-              help
+            [
+              "run",
+              "describe",
+              "manifest",
+              "ping",
+              "query_git_commit_info",
+              "help"
             ]
           end
 

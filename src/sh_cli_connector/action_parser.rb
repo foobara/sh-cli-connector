@@ -93,7 +93,7 @@ module Foobara
         end
 
         def supported_actions
-          %w[run describe manifest help list]
+          ["run", "describe", "manifest", "help", "list"]
         end
 
         private

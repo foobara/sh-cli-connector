@@ -27,7 +27,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliResul
     let(:object) do
       {
         a: [
-          { b: %i[foo bar] },
+          { b: [:foo, :bar] },
           10,
           [1, 2, 3]
         ],

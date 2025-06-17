@@ -6,7 +6,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliTabul
 
   let(:table) do
     [
-      %w[foofoo barbar bazbaz]
+      ["foofoo", "barbar", "bazbaz"]
     ]
   end
 

@@ -324,7 +324,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when asking for help with a command" do
-      let(:argv) { %w[help SomeCommand] }
+      let(:argv) { ["help", "SomeCommand"] }
 
       it "gives help text for the command" do
         expect(response.status).to be(0)
@@ -352,7 +352,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when asking for help with a command that doesn't exist" do
-      let(:argv) { %w[help SomeCommandThatDoesntExist] }
+      let(:argv) { ["help", "SomeCommandThatDoesntExist"] }
 
       it "gives general help text with a warning about not finding the command" do
         expect(response.status).to be(0)
@@ -364,7 +364,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when asking for help with the run action" do
-      let(:argv) { %w[help run] }
+      let(:argv) { ["help", "run"] }
 
       it "gives help for the run action" do
         expect(response.status).to be(0)
@@ -375,7 +375,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when asking for help with the describe action" do
-      let(:argv) { %w[help describe] }
+      let(:argv) { ["help", "describe"] }
 
       it "gives help for the describe action" do
         expect(response.status).to be(0)
@@ -386,7 +386,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when asking for help with the ping action" do
-      let(:argv) { %w[help ping] }
+      let(:argv) { ["help", "ping"] }
 
       it "gives help for the ping action" do
         expect(response.status).to be(0)
@@ -397,7 +397,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when asking for help with the query_git_commit_info action" do
-      let(:argv) { %w[help query_git_commit_info] }
+      let(:argv) { ["help", "query_git_commit_info"] }
 
       it "gives help for the query_git_commit_info action" do
         expect(response.status).to be(0)
@@ -408,7 +408,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when asking for help with the help action" do
-      let(:argv) { %w[help help] }
+      let(:argv) { ["help", "help"] }
 
       it "gives help for the help action" do
         expect(response.status).to be(0)
@@ -419,7 +419,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when asking for a list of commands" do
-      let(:argv) { %w[list] }
+      let(:argv) { ["list"] }
 
       it "gives a list of commands" do
         expect(response.status).to be(0)
@@ -428,7 +428,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       end
 
       context "when verbose" do
-        let(:argv) { %w[list --verbose] }
+        let(:argv) { ["list", "--verbose"] }
 
         it "gives commands and their descriptions" do
           expect(response.status).to be(0)
@@ -439,7 +439,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "when asking for a list of commands via -l" do
-      let(:argv) { %w[-l] }
+      let(:argv) { ["-l"] }
 
       it "gives a list of commands" do
         expect(response.status).to be(0)
@@ -448,7 +448,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
       end
 
       context "when verbose" do
-        let(:argv) { %w[-l --verbose] }
+        let(:argv) { ["-l", "--verbose"] }
 
         it "gives commands and their descriptions" do
           expect(response.status).to be(0)
@@ -511,7 +511,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         end
       end
 
-      let(:argv) { %w[run SomeCommand] }
+      let(:argv) { ["run", "SomeCommand"] }
 
       it "runs it" do
         expect(response.status).to be(0)
@@ -568,7 +568,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     end
 
     context "with a bunch of unexpected positional arguments" do
-      let(:argv) { %w[SomeCommand 10 11 12] }
+      let(:argv) { ["SomeCommand", "10", "11", "12"] }
 
       it "is an error" do
         expect(response.status).to be(6)

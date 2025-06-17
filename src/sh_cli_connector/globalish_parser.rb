@@ -70,7 +70,7 @@ module Foobara
             result.parsed[:verbose] = true
           end
 
-          allowed_entity_depths = %w[aggregate atomic record-store]
+          allowed_entity_depths = ["aggregate", "atomic", "record-store"]
           parser.on("--entity-depth DEPTH", allowed_entity_depths, "Set the entity depth") do |depth|
             depth = "record_store" if depth == "record-store"
             result.parsed[:entity_depth] = depth
