@@ -600,5 +600,25 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         expect(response.body).to match('At bar: Cannot cast "asdf"')
       end
     end
+
+    context "when the command returns nil" do
+      let(:command_class) do
+        stub_class "SomeCommand", Foobara::Command do
+          description "Just some command class"
+
+          def execute
+            nil
+          end
+        end
+      end
+
+      let(:argv) { ["run", "SomeCommand"] }
+
+      it "does not print 'nil'" do
+        expect(response.status).to be(0)
+        expect(command_connector).to have_received(:exit).with(0)
+        expect(response.body).to eq("")
+      end
+    end
   end
 end

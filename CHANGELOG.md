@@ -1,3 +1,7 @@
+## [1.0.0] - 2025-06-17
+
+- Do not print out "nil" if the result is nil
+
 ## [0.0.18] - 2025-06-16
 
 - Support Time/Date/DateTime in CliResultSerializer

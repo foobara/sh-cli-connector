@@ -5,6 +5,8 @@ module Foobara
         # Should allow either atomic or aggregate
         class CliResultSerializer < CommandConnectors::Serializers::SuccessSerializer
           def serialize(object)
+            return "" if object.nil?
+
             serializable = atomic_serializer.serialize(object)
 
             if serializable.is_a?(::String)
