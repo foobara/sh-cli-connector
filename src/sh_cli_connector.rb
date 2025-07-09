@@ -61,7 +61,11 @@ module Foobara
         status = response.status
         out = response.status.zero? ? request.stdout : request.stderr
 
-        out.puts response.body
+        body = response.body
+
+        unless body.empty?
+          out.puts response.body
+        end
 
         if request.exit
           exit status
