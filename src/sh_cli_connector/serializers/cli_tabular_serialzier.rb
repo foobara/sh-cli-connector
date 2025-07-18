@@ -151,7 +151,23 @@ module Foobara
             cellified_table = []
 
             row_regexes = widths.map do |width|
-              /\S.{0,#{width}}\S(?=\s|$)|\S+/
+              # Matches a non-whitespace character
+              # followed by 0 to width characters of any type
+              # then a non-whitespace character
+              # We assert that we either at a whitespace character or the end of the string (without consuming)
+              #
+              # or
+              #
+              # that the entire string has no whitespace characters at all.
+              #
+              # Basically, we are making sure we are starting on and stopping on
+              # a word boundary.
+              #
+              # Note: Assuming we need to subtract two characters from width here
+              # because we consume two characters in the regex with \S.
+              # However, it could be that this is instead needed because
+              # of padding or something.
+              /\S.{0,#{width - 2}}\S(?=\s|$)|\S+/
             end
 
             table.each do |row|
@@ -173,7 +189,9 @@ module Foobara
                     parts_size = parts.size
 
                     parts.each.with_index do |rows_worth, inner_index|
-                      rows_worth << "-" unless inner_index == parts_size - 1
+                      unless inner_index == parts_size - 1
+                        rows_worth << "-"
+                      end
                       cell << rows_worth
                     end
                   else

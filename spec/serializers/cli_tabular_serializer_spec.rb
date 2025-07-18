@@ -43,8 +43,8 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliTabul
             a b This is way too
                 loooooooooooooooo-
                 oooooooong
-                to fit on one lin-
-                e.
+                to fit on one
+                line.
           OUTPUT
         )
       end
