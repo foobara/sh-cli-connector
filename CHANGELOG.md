@@ -1,3 +1,8 @@
+## [1.0.1] - 2025-07-17
+
+- Handle a strange word-wrapping error with command descriptions
+- Do not output a blank line if the result is nil
+
 ## [1.0.0] - 2025-06-17
 
 - Do not print out "nil" if the result is nil

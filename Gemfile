@@ -16,7 +16,7 @@ group :development do
 end
 
 group :test do
-  gem "foobara-spec-helpers", "~> 0.0.1"
+  gem "foobara-spec-helpers", "< 2.00"
   gem "rspec"
   gem "rspec-its"
   gem "simplecov"
