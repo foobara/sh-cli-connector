@@ -1,3 +1,7 @@
+## [1.0.2] - 2025-07-31
+
+- Fix some deprecation warnings
+
 ## [1.0.1] - 2025-07-17
 
 - Handle a strange word-wrapping error with command descriptions

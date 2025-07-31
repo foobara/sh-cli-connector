@@ -103,7 +103,7 @@ module Foobara
                           elsif request.success?
                             0
                           else
-                            errors = request.error_collection.error_array
+                            errors = request.error_collection
                             error = errors.first
 
                             case error

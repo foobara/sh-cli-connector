@@ -5,7 +5,7 @@ module Foobara
         # TODO: move this to its own project
         class CliErrorsSerializer < CommandConnectors::Serializers::ErrorsSerializer
           def serialize(error_collection)
-            Util.to_sentence(error_collection.error_array.map(&:message))
+            Util.to_sentence(error_collection.map(&:message))
           end
 
           def priority
