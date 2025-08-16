@@ -1,3 +1,7 @@
+## [1.1.0] - 2025-08-22
+
+- Handle Foobara 0.1.1 type declarations
+
 ## [1.0.2] - 2025-07-31
 
 - Fix some deprecation warnings

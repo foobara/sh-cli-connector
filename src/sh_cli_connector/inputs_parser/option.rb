@@ -150,6 +150,10 @@ module Foobara
             !default.nil?
           end
 
+          def primitive?
+            attribute_type.primitive?
+          end
+
           def description
             desc = []
             attributes_description = attribute_type.description
@@ -162,10 +166,12 @@ module Foobara
               desc << "Required"
             end
 
-            one_of = attribute_type.declaration_data[:one_of]
+            unless primitive?
+              one_of = attribute_type.declaration_data[:one_of]
 
-            if one_of && !one_of.empty?
-              desc << "One of: #{one_of.join(", ")}"
+              if one_of && !one_of.empty?
+                desc << "One of: #{one_of.join(", ")}"
+              end
             end
 
             if has_default?
@@ -176,7 +182,7 @@ module Foobara
               desc.map!.with_index do |d, index|
                 break if index == desc.size - 1
 
-                if d =~ /[\.!?\]\}:]$/
+                if d =~ /[.!?\]}:]$/
                   d
                 else
                   "#{d}."

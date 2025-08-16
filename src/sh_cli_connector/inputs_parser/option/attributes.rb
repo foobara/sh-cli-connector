@@ -18,7 +18,7 @@ module Foobara
                 always_prefix_inputs:
               )
                 sub_required_attributes = if is_required
-                                            attribute_type.declaration_data[:required] || []
+                                            attribute_type.declaration_data[:required]
                                           end || []
 
                 defaults = attribute_type.declaration_data[:defaults] || {}
