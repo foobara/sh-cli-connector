@@ -175,7 +175,8 @@ module Foobara
             end
 
             if has_default?
-              desc << "Default: #{default.inspect}"
+              displayed_default = default.is_a?(String) ? default : default.inspect
+              desc << "Default: #{displayed_default}"
             end
 
             unless desc.empty?
