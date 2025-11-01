@@ -1,3 +1,7 @@
+## [1.1.1] - 2025-11-01
+
+- Make values shown in help properly quoted for sh, consistently across one_of and default
+
 ## [1.1.0] - 2025-08-22
 
 - Handle Foobara 0.1.1 type declarations
