@@ -175,8 +175,8 @@ module Foobara
             end
 
             if has_default?
-              displayed_default = default.is_a?(String) ? default : default.inspect
-              desc << "Default: #{displayed_default}"
+              displayable_str = to_bash_str(default)
+              desc << "Default: #{displayable_str}"
             end
 
             unless desc.empty?
@@ -191,6 +191,18 @@ module Foobara
               end
 
               desc.join(" ")
+            end
+          end
+
+          private
+
+          def to_bash_str(inp_str)
+            stripped_str = inp_str.to_s.strip
+
+            if stripped_str.match?(/\s/)
+              stripped_str.inspect
+            else
+              stripped_str
             end
           end
         end
