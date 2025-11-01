@@ -154,20 +154,6 @@ module Foobara
             attribute_type.primitive?
           end
 
-          private
-
-          def to_bash_str(inp_str)
-            stripped_str = inp_str.to_s.strip
-
-            if stripped_str.match?(/\s/)
-              stripped_str.inspect
-            else
-              stripped_str
-            end
-          end
-
-          public
-
           def description
             desc = []
             attributes_description = attribute_type.description
@@ -205,6 +191,18 @@ module Foobara
               end
 
               desc.join(" ")
+            end
+          end
+
+          private
+
+          def to_bash_str(inp_str)
+            stripped_str = inp_str.to_s.strip
+
+            if stripped_str.match?(/\s/)
+              stripped_str.inspect
+            else
+              stripped_str
             end
           end
         end
