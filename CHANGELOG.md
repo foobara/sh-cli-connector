@@ -1,3 +1,7 @@
+## [1.1.2] - 2025-11-04
+
+- Fix an off-by-one line-wrapping bug when using --help
+
 ## [1.1.1] - 2025-11-01
 
 - Make values shown in help properly quoted for sh, consistently across one_of and default

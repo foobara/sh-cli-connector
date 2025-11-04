@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    foobara-sh-cli-connector (1.1.1)
+    foobara-sh-cli-connector (1.1.2)
       foobara (>= 0.1.1, < 2.0.0)
 
 GEM
@@ -37,7 +37,7 @@ GEM
       rubocop-rspec
     foobara-spec-helpers (0.0.4)
       foobara-util
-    foobara-util (1.0.3)
+    foobara-util (1.0.4)
     formatador (1.2.2)
       reline
     guard (2.19.1)
