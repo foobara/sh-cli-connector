@@ -43,7 +43,7 @@ module Foobara
 
               lines.each do |line|
                 if indent > 0
-                  line = (" " * indent) + line
+                  line = (" " * (indent-1)) + line
                 end
 
                 io.puts line.rstrip
