@@ -55,7 +55,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector::Serializers::CliTabul
 
       it "serializes the table" do
         expect(result).to eq(
-          "  foo- bar- bazbaz\n  foo  bar\n"
+          " foo- bar- bazbaz\n foo  bar\n"
         )
       end
     end
