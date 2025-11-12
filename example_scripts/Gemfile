@@ -1,0 +1,13 @@
+source "https://rubygems.org"
+
+gem "foobara-sh-cli-connector", "< 2.0.0"
+
+# Eliminates warning caused by pry-byebug
+gem "irb"
+gem "pry"
+gem "pry-byebug"
+gem "rubocop"
+gem "rubocop-rake"
+# Eliminates warning caused by pry-byebug
+gem "foobara-rubocop-rules"
+gem "ostruct"

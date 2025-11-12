@@ -1,48 +1,122 @@
 # Foobara::ShCliConnector
 
-TODO: Delete this and the text below, and describe your gem
+A command connector for Foobara that exposes commands via a shell command-line interface (CLI). This connector parses command-line arguments and routes them to Foobara commands, making it easy to build CLI tools from your Foobara commands.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library
-into a gem. Put your Ruby code in the file `lib/foobara/sh_cli_connector`. To experiment with that code,
-run `bin/console` for an interactive prompt.
+<!-- TOC -->
+* [Foobara::ShCliConnector](#foobarashcliconnector)
+  * [Installation](#installation)
+  * [Usage](#usage)
+    * [Connecting multiple commands in a CLI script](#connecting-multiple-commands-in-a-cli-script)
+    * [Single Command Mode](#single-command-mode)
+  * [Development](#development)
+  * [Contributing](#contributing)
+    * [Reporting bugs or requesting features](#reporting-bugs-or-requesting-features)
+    * [Contributing code](#contributing-code)
+  * [License](#license)
+<!-- TOC -->
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it
-to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with
-instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
-Install the gem and add to the application's Gemfile by executing:
-
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+Typical stuff: add `gem "foobara-sh-cli-connector"` to your Gemfile or .gemspec file. Or even just
+`gem install foobara-sh-cli-connector` if that's your jam.
 
 ## Usage
 
-TODO: Write usage instructions here
+### Connecting multiple commands in a CLI script
+
+```ruby
+require "foobara/sh_cli_connector"
+
+class Greet < Foobara::Command
+  inputs do
+    who :string, default: "World"
+  end
+  result :string
+
+  def execute
+    build_greeting
+
+    greeting
+  end
+
+  attr_accessor :greeting
+
+  def build_greeting = self.greeting = "Hello, #{who}!"
+end
+
+connector = Foobara::CommandConnectors::ShCliConnector.new
+connector.connect(Greet)
+connector.run
+```
+
+Then run your CLI script:
+
+```
+$ ./cli_demo.rb
+Usage: cli_demo.rb [GLOBAL_OPTIONS] [ACTION] [COMMAND_OR_TYPE] [COMMAND_INPUTS]
+
+Available actions:
+
+  run, help, describe, manifest
+
+Default action: run
+
+Available commands:
+
+ Greet
+$ ./cli_demo.rb help Greet
+Usage: cli_demo.rb [GLOBAL_OPTIONS] Greet [COMMAND_INPUTS]
+
+Command inputs:
+
+ -w, --who WHO                    Default: World
+
+$ ./cli_demo.rb Greet
+Hello, World!
+$ ./cli_demo.rb Greet -w Fumiko
+Hello, Fumiko!
+```
+
+### Single Command Mode
+
+If you want to make a CLI script that only exposes one command, you can use single command mode:
+
+```ruby
+connector = Foobara::CommandConnectors::ShCliConnector.new(single_command_mode: Greet)
+connector.run
+```
+
+Now you can run this without specifying the command name:
+
+```
+$ ./greet-cli --help
+Usage: greet-cli [INPUTS]
+
+Inputs:
+
+ -w, --who WHO                    Default: World
+$ ./greet-cli --who Barbara
+Hello, Barbara!
+```
 
 ## Development
 
-```
-bundle config set local.foobara ../foobara
-bundle config set disable_local_branch_check true
-```
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can
-also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the
-version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version,
-push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/foobara-sh_cli_connector.
+I would love help with this and other Foobara gems! Feel free to hit me up at miles@foobara.com if you
+think helping out would be fun or interesting! I have tasks for all experience levels and am often free
+to pair on Foobara stuff.
+
+### Reporting bugs or requesting features
+
+Bug reports and feature requests can be made as github issues at https://github.com/foobara/sh-cli-connector
+
+### Contributing code
+
+You should be able to fork the repo, clone it locally, run `bundle` and then `rake` to run
+the test suite and linter. Make your changes and push them up and open a PR! If you need any help please reach out and we're happy to help!
 
 ## License
 
-This project is licensed under your choice of the Apache-2.0 license or the MIT license.
-See [LICENSE.txt](LICENSE-MIT.txt) for more info about licensing.
+foobara-sh-cli-connector is licensed under your choice of the Apache-2.0 license or the MIT license.
+See [LICENSE.txt](LICENSE.txt) for more info about licensing.
