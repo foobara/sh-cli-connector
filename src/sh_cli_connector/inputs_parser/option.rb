@@ -57,6 +57,14 @@ module Foobara
             # args << attributes_type.declaration_data[:one_of] if attributes_type.declaration_data.key?(:one_of)
           end
 
+          def cast_value(value)
+            if array?
+              [value]
+            else
+              value
+            end
+          end
+
           def _non_colliding_path(full_paths)
             1.upto(full_path.length - 1) do |size|
               candidate_path = _truncated_path(full_path, size)

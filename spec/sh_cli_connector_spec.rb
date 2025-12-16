@@ -297,18 +297,19 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
           end
 
           context "when unsetting" do
-            let(:argv) { ["SomeCommand", "--no-flag"] }
+            let(:argv) { ["SomeCommand", "--skip-flag"] }
 
             it "is false as normal" do
+              expect(response).to be_success
               expect(response.command.inputs[:flag]).to be(false)
             end
           end
         end
 
         context "when turning flag off" do
-          let(:argv) { ["SomeCommand", "--no-flag"] }
+          let(:argv) { ["SomeCommand", "--skip-flag"] }
 
-          it "is false when using --no- form" do
+          it "is false when using --skip- form" do
             expect(response.command.inputs[:flag]).to be(false)
           end
         end

@@ -36,11 +36,11 @@ module Foobara
                   h = h[key] ||= {}
                 end
 
+                value = option.cast_value(value)
+                h[option.attribute_name] = value
+
                 result_source.current_array = if option.array?
-                                                h[option.attribute_name] = [value]
-                                              else
-                                                h[option.attribute_name] = value
-                                                nil
+                                                value
                                               end
               end
             end
