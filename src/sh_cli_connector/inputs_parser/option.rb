@@ -158,6 +158,10 @@ module Foobara
             !default.nil?
           end
 
+          def show_default?
+            true
+          end
+
           def primitive?
             attribute_type.primitive?
           end
@@ -182,7 +186,7 @@ module Foobara
               end
             end
 
-            if has_default?
+            if has_default? && show_default?
               displayable_str = to_bash_str(default)
               desc << "Default: #{displayable_str}"
             end

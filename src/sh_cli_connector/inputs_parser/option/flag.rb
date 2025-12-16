@@ -53,6 +53,10 @@ module Foobara
             def array?
               false
             end
+
+            def show_default?
+              false
+            end
           end
         end
       end
