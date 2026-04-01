@@ -1,3 +1,12 @@
+## [1.1.4] - 2026-04-01
+
+- Fix bug where authentication errors were not being handled
+
+## [1.1.3] - 2025-12-16
+
+- Change --no-whatever to --skip-whatever
+- Do not show default value for boolean flags
+
 ## [1.1.2] - 2025-11-04
 
 - Fix an off-by-one line-wrapping bug when using --help

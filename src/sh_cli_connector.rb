@@ -130,19 +130,43 @@ module Foobara
 
       def set_response_body(response)
         request = response.request
+        error = request.error
 
-        response.body = if request.error
-                          case request.error
-                          when ParseError, CommandConnector::NotFoundError
-                            request.error.message
+        response.body = if error
+                          if supported_request_error?(error)
+                            error.message
                           else
                             # :nocov:
-                            raise "Not sure how to handle error: #{request.error}"
+                            raise "Not sure how to handle error: #{error}"
                             # :nocov:
                           end
                         else
                           request.response_body
                         end
+      end
+
+      def supported_request_error?(error)
+        supported_request_errors.include?(error.class)
+      end
+
+      def supported_request_errors
+        return @supported_request_errors if @supported_request_errors
+
+        @supported_request_errors = [
+          ParseError,
+          CommandConnector::UnknownError,
+          CommandConnector::NotFoundError,
+          CommandConnector::UnauthenticatedError,
+          CommandConnector::NotAllowedError,
+          CommandConnector::NoCommandFoundError
+        ]
+
+        if Foobara.const_defined?(:Entity) && Foobara::Entity.const_defined?(:NotFoundError)
+          # Does this make more sense in entities_plumbing project once it's out of the monorepo?
+          @supported_request_errors << Foobara::Entity::NotFoundError
+        end
+
+        @supported_request_errors
       end
     end
   end
