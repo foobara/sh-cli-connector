@@ -13,13 +13,13 @@ module Foobara
 
           def action=(action)
             if @action
-              # :nocov:
+              # simplecov:disable
               raise ParseError.new(message: "Action already set")
-              # :nocov:
+              # simplecov:enable
             elsif argument
-              # :nocov:
+              # simplecov:disable
               raise ParseError.new(message: "Not expecting #{action} to appear after #{argument}")
-              # :nocov:
+              # simplecov:enable
             else
               @action = action
             end
@@ -27,9 +27,9 @@ module Foobara
 
           def argument=(argument)
             if @argument
-              # :nocov:
+              # simplecov:disable
               raise ParseError.new(message: "Argument already set")
-              # :nocov:
+              # simplecov:enable
             end
 
             @argument = argument

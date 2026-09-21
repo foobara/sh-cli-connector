@@ -109,21 +109,21 @@ module Foobara
                             case error
                             when CommandConnector::NotFoundError, Foobara::Entity::NotFoundError
                               # TODO: we should not be coupled to Entities here...
-                              # :nocov:
+                              # simplecov:disable
                               2
-                              # :nocov:
+                              # simplecov:enable
                             when CommandConnector::UnauthenticatedError
-                              # :nocov:
+                              # simplecov:disable
                               3
-                              # :nocov:
+                              # simplecov:enable
                             when CommandConnector::NotAllowedError
-                              # :nocov:
+                              # simplecov:disable
                               4
-                              # :nocov:
+                              # simplecov:enable
                             when CommandConnector::UnknownError
-                              # :nocov:
+                              # simplecov:disable
                               5
-                              # :nocov:
+                              # simplecov:enable
                             end || 1
                           end
       end
@@ -136,9 +136,9 @@ module Foobara
                           if supported_request_error?(error)
                             error.message
                           else
-                            # :nocov:
+                            # simplecov:disable
                             raise "Not sure how to handle error: #{error}"
-                            # :nocov:
+                            # simplecov:enable
                           end
                         else
                           request.response_body

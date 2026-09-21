@@ -73,9 +73,9 @@ module Foobara
               if match_count == 1
                 return candidate_path
               elsif match_count == 0
-                # :nocov:
+                # simplecov:disable
                 raise "Not expecting to reach here"
-                # :nocov:
+                # simplecov:enable
               end
             end
 

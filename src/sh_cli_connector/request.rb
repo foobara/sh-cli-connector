@@ -52,9 +52,9 @@ module Foobara
                                end
 
             unless serializer_class
-              # :nocov:
+              # simplecov:disable
               raise ParseError.new(message: "Unknown input format: #{input_format}")
-              # :nocov:
+              # simplecov:enable
             end
 
             serializer_class.new(nil)
@@ -152,9 +152,9 @@ module Foobara
             result = globalish_parser.parse(inputs_argv)
 
             if result.remainder.any?
-              # :nocov:
+              # simplecov:disable
               raise ParseError.new(message: "Found invalid options #{globalish_parser.remainder}")
-              # :nocov:
+              # simplecov:enable
             end
 
             globalish_options.merge!(result.parsed)

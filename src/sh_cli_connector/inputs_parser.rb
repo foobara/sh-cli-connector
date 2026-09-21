@@ -88,9 +88,9 @@ module Foobara
             end
           else
             # Unreachable but would be reachable if we didn't require inputs to be attributes
-            # :nocov:
+            # simplecov:disable
             option_set << options
-            # :nocov:
+            # simplecov:enable
           end
         end
       end
