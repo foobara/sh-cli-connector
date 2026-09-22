@@ -28,14 +28,14 @@ module Foobara
                 width = widths[index]
 
                 cell.each.with_index do |line, line_index|
-                  lines[line_index] ||= ""
+                  lines[line_index] ||= +""
                   line = pad(line, width) unless is_last_column
                   lines[line_index] << line
                 end
 
                 unless is_last_column
                   (max_lines - cell.size).times do |i|
-                    line = lines[max_lines - i - 1] ||= ""
+                    line = lines[max_lines - i - 1] ||= +""
                     line << pad("", width)
                   end
                 end
@@ -106,9 +106,9 @@ module Foobara
                         config[:terminal_width]
                       elsif config.respond_to?(:terminal_width)
                         # TODO: test this
-                        # :nocov:
+                        # simplecov:disable
                         config.terminal_width
-                        # :nocov:
+                        # simplecov:enable
                       end
 
               (width || IO.console_size[1]) - indent
@@ -120,9 +120,9 @@ module Foobara
                           declaration_data[:indent]
                         elsif declaration_data.respond_to?(:indent)
                           # TODO: test this
-                          # :nocov:
+                          # simplecov:disable
                           declaration_data.indent
-                          # :nocov:
+                          # simplecov:enable
                         end || 0
           end
 
@@ -134,9 +134,9 @@ module Foobara
                         config[:min_final_column_width]
                       elsif config.respond_to?(:min_final_column_width)
                         # TODO: test this
-                        # :nocov:
+                        # simplecov:disable
                         config.min_final_column_width
-                        # :nocov:
+                        # simplecov:enable
                       end
 
               width || 10

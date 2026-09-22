@@ -14,18 +14,17 @@ module Foobara
               "skip-#{Util.kebab_case(prefixed_name)}"
             end
 
-            # rubocop:disable Naming/PredicateMethod
+            # rubocop:disable-next Naming/PredicateMethod
             def cast_value(value)
               unless value == true
                 # Ruby's Optparser handles --no- but not --skip- prefixes. So we are implementing it ourselves.
-                # :nocov:
+                # simplecov:disable
                 raise "This shouldn't happen. Please debug this!"
-                # :nocov:
+                # simplecov:enable
               end
 
               false
             end
-            # rubocop:enable Naming/PredicateMethod
           end
         end
       end

@@ -92,9 +92,9 @@ module Foobara
                 io.write after_colon ? " " : padding
                 io.write object.to_s
               else
-                # :nocov:
+                # simplecov:disable
                 raise "Unsupported type: #{object.class}"
-                # :nocov:
+                # simplecov:enable
               end
             end
           end

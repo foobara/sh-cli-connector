@@ -1,7 +1,7 @@
 # TODO: move this to a re-usable place?
 # TODO: we might not need this... delete if so
 # TODO: although we might want a "flatten" transformer.
-# :nocov:
+# simplecov:disable
 module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
@@ -52,4 +52,4 @@ module Foobara
     end
   end
 end
-# :nocov:
+# simplecov:enable

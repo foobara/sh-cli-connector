@@ -4,17 +4,16 @@ module Foobara
       class InputsParser
         class Option
           class OnFlag < Flag
-            # rubocop:disable Naming/PredicateMethod
+            # rubocop:disable-next Naming/PredicateMethod
             def cast_value(value)
               unless value == true
-                # :nocov:
+                # simplecov:disable
                 raise "This shouldn't happen. Please debug this!"
-                # :nocov:
+                # simplecov:enable
               end
 
               true
             end
-            # rubocop:enable Naming/PredicateMethod
           end
         end
       end
