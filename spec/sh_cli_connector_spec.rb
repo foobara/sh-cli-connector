@@ -7,6 +7,17 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
     expect(Foobara::ShCliConnector::VERSION).to_not be_nil
   end
 
+  context "when parsing version flags" do
+    ["-v", "--version"].each do |flag|
+      it "sets the version action for #{flag}" do
+        result = described_class::GlobalishParser.new.parse([flag])
+
+        expect(result.parsed[:action]).to eq("version")
+        expect(result.remainder).to be_empty
+      end
+    end
+  end
+
   context "when there is a connected command" do
     let(:command_connector) do
       described_class.new(program_name: "test-cli", single_command_mode:, always_prefix_inputs:)
