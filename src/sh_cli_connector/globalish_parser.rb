@@ -49,6 +49,10 @@ module Foobara
             result.parsed[:action] = "list"
           end
 
+          parser.on("-v", "--version", "Show version information") do
+            result.parsed[:action] = "version"
+          end
+
           parser.on("-f FORMAT", "--format FORMAT", "Set the input/output format (such as yaml or json)") do |format|
             result.parsed[:input_format] = format
             result.parsed[:output_format] = format
