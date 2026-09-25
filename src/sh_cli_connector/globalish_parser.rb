@@ -49,6 +49,10 @@ module Foobara
             result.parsed[:action] = "list"
           end
 
+          parser.on("--output-format FORMAT", "Set the output format (such as yaml or json)") do |format|
+            result.parsed[:output_format] = format
+          end
+
           parser.on("-f FORMAT", "--format FORMAT", "Set the input/output format (such as yaml or json)") do |format|
             result.parsed[:input_format] = format
             result.parsed[:output_format] = format
@@ -56,10 +60,6 @@ module Foobara
 
           parser.on("--input-format FORMAT", "Set the input format (such as yaml or json)") do |format|
             result.parsed[:input_format] = format
-          end
-
-          parser.on("--output-format FORMAT", "Set the output format (such as yaml or json)") do |format|
-            result.parsed[:output_format] = format
           end
 
           parser.on("--stdin", "Read and parse inputs from stdin") do

@@ -1,11 +1,13 @@
 require "stringio"
 
+require_relative "../request"
+
 module Foobara
   module CommandConnectors
     class ShCliConnector < CommandConnector
       module Commands
         class Help < Command
-          inputs request: :duck # TODO: have some way to specify by Ruby class...
+          inputs request: Request
 
           result :string
 
@@ -141,11 +143,9 @@ module Foobara
 
           def print_available_actions
             output.puts
-            output.puts "Available actions:"
+            output.puts "Available actions (default is `run`):"
             output.puts
             output.puts "  #{known_actions.join(", ")}"
-            output.puts
-            output.puts "Default action: run"
           end
 
           def print_available_commands

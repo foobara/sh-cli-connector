@@ -77,7 +77,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         expect(response.request.action).to eq("help")
         # TODO: register help with the CLI serializer
         expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS]")
-        expect(response.body).to include("Available actions:")
+        expect(response.body).to include("Available actions")
         expect(response.body).to include("--stdin")
       end
     end
@@ -323,7 +323,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         expect(response.request.action).to eq("help")
         # TODO: register help with the CLI serializer
         expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS]")
-        expect(response.body).to include("Available actions:")
+        expect(response.body).to include("Available actions")
         expect(response.body).to include("--stdin")
       end
     end
@@ -363,7 +363,7 @@ RSpec.describe Foobara::CommandConnectors::ShCliConnector do
         expect(response.status).to be(0)
         expect(response.body).to include("WARNING: Unexpected argument: SomeCommandThatDoesntExist")
         expect(response.body).to include("Usage: test-cli [GLOBAL_OPTIONS] [ACTION] [COMMAND_OR_TYPE] [COMMAND_INPUTS]")
-        expect(response.body).to include("Available actions:")
+        expect(response.body).to include("Available actions")
         expect(response.body).to include("--help")
       end
     end
